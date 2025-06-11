@@ -236,6 +236,4 @@ Khi này Workflow toàn bộ sẽ đi ra từ nhanh true của IF node thứ hai
 
 </div>
 
-Source Code: [https://github.com/DucBaoUIT/Training-Vietnix/blob/main/Task06.json](https://github.com/DucBaoUIT/Training-Vietnix/blob/main/Task06.json)
-
 Demo: [https://youtu.be/i4MDZut49fk](https://youtu.be/i4MDZut49fk)
