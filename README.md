@@ -186,7 +186,7 @@ Luồng chạy của mô hình (Luồng màu xanh). Có thể thấy workflow g�
 
 <div align='center'>
 
-![XnB_Image_14](https://github.com/user-attachments/assets/8e377fda-bfa6-41c1-917c-c7050e22f2ad)
+![image](https://github.com/user-attachments/assets/980afe22-21ab-4f88-bc7d-fa7e6c46d8d1)
 
 </div>
 
@@ -204,7 +204,7 @@ Ví dụ site 1.bao.vietnix.tech chưa có ảnh hay iFrame, thực hiện chạ
 
 <div align='center'>
 
-![MQx_Image_16](https://github.com/user-attachments/assets/a9f7e00e-3b00-4bc3-98d2-30955c2d181c)
+![image](https://github.com/user-attachments/assets/c056ac7d-fb3c-48d5-a25d-894ca70c0ebf)
 
 </div>
 
@@ -214,7 +214,7 @@ Ví dụ tắt apache trên site 1.bao.vietnix.tech và xem kết quả Workflow
 
 <div align='center'>
 
-![0NK_Image_17](https://github.com/user-attachments/assets/4bd0ce59-dd22-4024-8b34-69acbb35d9e9)
+![image](https://github.com/user-attachments/assets/826d6730-24b0-4e40-a25a-bd6a0f7fab6b)
 
 </div>
 
@@ -232,7 +232,7 @@ Khi này Workflow toàn bộ sẽ đi ra từ nhanh true của IF node thứ hai
 
 <div align='center'>
 
-![Stm_Image_19](https://github.com/user-attachments/assets/f21a1837-e11d-466b-8ca3-caadf0cb7803)
+![image](https://github.com/user-attachments/assets/cceeab4d-3565-4609-a816-9921bc2452ce)
 
 </div>
 
