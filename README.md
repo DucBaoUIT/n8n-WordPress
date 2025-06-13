@@ -75,18 +75,51 @@ Cấu hình node HTTP đó như sau. Lưu ý các trường sau:
 
 - Full Response: Nên bật để lấy thông tin Status và Error
 
-<div align='center>
-
-![uL0_Image_6](https://github.com/user-attachments/assets/175fe188-b1aa-46d0-9835-1d6445f442d6)
-
-</div>
-
 - Thực hiện tương tự với node của XML 
 
 ## 4. Lấy toàn bộ Sub URL 
 
+Sử dụng node code để lọc ra toàn bộ các subXML, thêm code JavaScript dưới đây. Khi này node sẽ trả về giá trị là các subpage
 
+```
+const xml = items[0].json.body || items[0].json.data || '';
+if (typeof xml !== 'string') {
+  throw new Error('Sitemap XML is not a valid string');
+}
 
+const urls = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)].map(match => match[1]);
+
+return urls.map(url => ({
+  json: {
+    subpage: url,
+  },
+}));
+```
+
+Thực hiện lấy các subpage đó để kiểm tra qua node HTTP Request và tách các URL cần kiểm tra bằng node code. Thực hiện code JavaScript sau
+
+```
+const results = [];
+
+for (const item of items) {
+  const xml = item.json.body || item.json.data || '';
+
+  if (typeof xml !== 'string') {
+    throw new Error('Sitemap XML is not a valid string');
+  }
+
+  const matches = [...xml.matchAll(/<loc>(.*?)<\/loc>/g)];
+  const urls = matches.map(match => match[1]);
+
+  for (const domain of urls) {
+    results.push({ json: { domain } });
+  }
+}
+
+return results;
+```
+
+Sau đó, kiểm tra tất cả URL này, nếu URL tồn tại và có thể truy cập, thực hiện bước tiếp theo, nếu có lỗi, gửi thông báo về discord
 ## 5. Kiểm tra Images và IFrames
 
 Lọc ra tất cả Images và IFrame từ trang web thành 2 mảng tương ứng. Thực hiện bằng cách sử dụng node HTML với lựa chọn “Extract HTML Content” và cấu hình như sau để lấy ảnh và iFrames.
@@ -184,64 +217,4 @@ Cấu hình thông báo lỗi như sau. Chú thích
 
 </div>
 
-# III. Thử nghiệm
 
-## 1. Các website bị lỗi 404
-
-Để thử nghiệm lỗi, thêm “/111” sau trường URL tại bước Fetch HTML và thử nghiệm chạy lại Workflow
-
-Luồng chạy của mô hình (Luồng màu xanh). Có thể thấy workflow gửi thông báo về discord rồi chạy website khác.
-
-<div align='center'>
-
-![image](https://github.com/user-attachments/assets/980afe22-21ab-4f88-bc7d-fa7e6c46d8d1)
-
-</div>
-
-Thông báo gửi về Discord
-
-<div align='center'>
-
-![lAV_Image_15](https://github.com/user-attachments/assets/d2fc2eb0-b43f-4909-9136-aa3a0c7a8665)
-
-</div>
-
-## 2. Website không có Image và IFrame
-
-Ví dụ site 1.bao.vietnix.tech chưa có ảnh hay iFrame, thực hiện chạy và quan sát Workflow. Có thể thấy rằng luồng chạy thẳng nhánh true của IF node đầu tiên và quay về kiểm tra website khác.
-
-<div align='center'>
-
-![image](https://github.com/user-attachments/assets/c056ac7d-fb3c-48d5-a25d-894ca70c0ebf)
-
-</div>
-
-## 3. Website lỗi
-
-Ví dụ tắt apache trên site 1.bao.vietnix.tech và xem kết quả Workflow. Khi này sẽ thấy có 1 đường chạy gửi thông báo lỗi cho Discord rồi mới quay lại vòng lặp.
-
-<div align='center'>
-
-![image](https://github.com/user-attachments/assets/826d6730-24b0-4e40-a25a-bd6a0f7fab6b)
-
-</div>
-
-Thông báo lỗi
-
-<div align='center>
-
-![jE4_Image_18](https://github.com/user-attachments/assets/2de5dc8d-5e4a-4c60-9fbc-b7729fea3275)
-
-</div>
-
-## 4. Cả 3 website chạy bình thường
-
-Khi này Workflow toàn bộ sẽ đi ra từ nhanh true của IF node thứ hai
-
-<div align='center'>
-
-![image](https://github.com/user-attachments/assets/cceeab4d-3565-4609-a816-9921bc2452ce)
-
-</div>
-
-Demo: [https://youtu.be/i4MDZut49fk](https://youtu.be/i4MDZut49fk)
