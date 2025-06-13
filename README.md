@@ -6,8 +6,7 @@ Mô hình dưới đây sẽ hướng dẫn các bạn cách tạo workflow N8N 
 
 Mô hình tổng quan
 
-![image](https://github.com/user-attachments/assets/cb8354f8-bdc4-4bdd-ab89-c0c940a1852c)
-
+![image](https://github.com/user-attachments/assets/d1bd5c80-bd1e-4ec5-b13e-e542734cdd26)
 
 
 # Các bước thực hiện
