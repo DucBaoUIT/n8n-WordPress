@@ -1,53 +1,24 @@
 {
-  "name": "My workflow",
+  "name": "WP-n8n",
   "nodes": [
     {
       "parameters": {
-        "url": "={{  $('Loop Main Domain').item.json.domain + '/wp-sitemap.xml' }}",
+        "url": "={{ $('Extract Main Domains').item.json.domain + '/wp-sitemap.xml' }}",
         "responseFormat": "string",
         "options": {
           "fullResponse": true,
           "followRedirect": true
         }
       },
-      "id": "f957739b-84bc-4fcc-b1f3-3b802c743f3b",
+      "id": "f93fc12d-96b9-42bb-8037-3cd5ce8fe610",
       "name": "Get Sitemap XML",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        180,
-        -640
+        -2980,
+        960
       ],
       "onError": "continueErrorOutput"
-    },
-    {
-      "parameters": {
-        "documentId": {
-          "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1gTueOAEUnMkDds2fAxPGd09oPmKyQx53yRR5gEndwkE/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "https://docs.google.com/spreadsheets/d/1gTueOAEUnMkDds2fAxPGd09oPmKyQx53yRR5gEndwkE/edit?gid=0#gid=0",
-          "mode": "url"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        -700,
-        -640
-      ],
-      "id": "b4bdab03-9b8b-47b9-9832-cda8ed0288c7",
-      "name": "List Domains",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "8RoPX4s8CW9ajkwn",
-          "name": "Google Sheets account"
-        }
-      }
     },
     {
       "parameters": {
@@ -56,24 +27,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -500,
-        -640
+        -3440,
+        970
       ],
-      "id": "6d166047-303a-4fc3-946c-b59f76b4a10e",
+      "id": "09a210af-0e09-4b9e-b8d9-b273223ec373",
       "name": "Extract Main Domains"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        -320,
-        -640
-      ],
-      "id": "148c2cd1-74d2-4bcc-9c62-beed1e45e36e",
-      "name": "Loop Main Domain"
     },
     {
       "parameters": {
@@ -83,26 +41,26 @@
           "fullResponse": true
         }
       },
-      "id": "023011ce-2971-45f8-bc66-62c664738a03",
+      "id": "dc789b77-3e1b-4449-8d33-bdec43dba1a5",
       "name": "Get SubSitemap XML",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        620,
-        -640
+        -2560,
+        845
       ]
     },
     {
       "parameters": {
-        "jsCode": "const xml = items[0].json.body || items[0].json.data || '';\nif (typeof xml !== 'string') {\n  throw new Error('Sitemap XML is not a valid string');\n}\n\nconst urls = [...xml.matchAll(/<loc>(.*?)<\\/loc>/g)].map(match => match[1]);\n\nreturn urls.map(url => ({\n  json: {\n    subpage: url,\n  },\n}));\n"
+        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const xml = item.json.body || item.json.data || '';\n  \n  if (typeof xml !== 'string') {\n    continue; // hoặc throw nếu bạn muốn dừng hẳn\n  }\n\n  const urls = [...xml.matchAll(/<loc>(.*?)<\\/loc>/g)].map(match => match[1]);\n\n  for (const url of urls) {\n    results.push({\n      json: {\n        subpage: url,\n      }\n    });\n  }\n}\n\nreturn results;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        420,
-        -640
+        -2780,
+        845
       ],
-      "id": "e765f869-8217-4530-a826-44496490f410",
+      "id": "393f74e0-ba49-4616-a3c1-497481774e8b",
       "name": "Extract to SubSitemap"
     },
     {
@@ -112,10 +70,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        840,
-        -640
+        -2340,
+        845
       ],
-      "id": "f14e7979-75e9-433a-b577-ced242986e27",
+      "id": "6a247785-c9f5-4736-98e8-0482467a5968",
       "name": "All URL"
     },
     {
@@ -127,10 +85,10 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        740,
-        -220
+        -2560,
+        1170
       ],
-      "id": "3d3ca069-04d8-4764-9dc9-698a434c43e7",
+      "id": "4dbb2aa7-39b5-49ac-a0e0-3788f5a3e4e0",
       "name": "Log Status",
       "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
       "credentials": {
@@ -155,10 +113,10 @@
       "type": "n8n-nodes-base.cron",
       "typeVersion": 1,
       "position": [
-        -900,
-        -640
+        -3880,
+        970
       ],
-      "id": "75c44a68-0c7f-4429-8e4f-f292d103aebc"
+      "id": "371d6eea-f710-40d5-980c-f242e82aa2f1"
     },
     {
       "parameters": {
@@ -173,10 +131,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -80,
-        -640
+        -3220,
+        980
       ],
-      "id": "56731a96-b394-47d6-b63d-c6c0659ff8b6",
+      "id": "df20962c-0dad-488d-90dc-b5a70f91dad4",
       "onError": "continueErrorOutput"
     },
     {
@@ -185,10 +143,10 @@
       "name": "Sub Domain Loop ",
       "typeVersion": 1,
       "position": [
-        3140,
-        -240
+        -340,
+        1100
       ],
-      "id": "10f5ae55-a7b9-453f-af3c-fc208522bb35"
+      "id": "02a7c4fb-a70b-46dd-9949-27480ffcae59"
     },
     {
       "parameters": {
@@ -209,10 +167,10 @@
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
       "position": [
-        1380,
-        -960
+        -1760,
+        540
       ],
-      "id": "85d6da53-4636-4feb-8f86-587e485f1963",
+      "id": "3e9d9d9f-44bd-48a3-b773-d54f1c61e34b",
       "name": "Extract Image"
     },
     {
@@ -234,10 +192,10 @@
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
       "position": [
-        1380,
-        -700
+        -1760,
+        780
       ],
-      "id": "56a9e21d-cf15-4df7-99db-9fb14d4c5b9c",
+      "id": "9afce9ad-fe76-4dc3-bf3f-be066a05441e",
       "name": "Extract IFrame"
     },
     {
@@ -247,10 +205,10 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.1,
       "position": [
-        1620,
-        -820
+        -1540,
+        640
       ],
-      "id": "2afe6001-5f46-4bf5-b0d9-b9145230600f",
+      "id": "b0aa8056-cf0f-415a-88b0-1b90c3288645",
       "name": "Merge"
     },
     {
@@ -266,10 +224,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        1080,
-        -640
+        -1980,
+        660
       ],
-      "id": "9dbd4974-b932-44ec-9e11-3c1324372e11",
+      "id": "375fcc54-aba6-4d4e-bb24-85d7fdc9252a",
       "onError": "continueErrorOutput"
     },
     {
@@ -285,16 +243,16 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        2100,
-        -940
+        -860,
+        320
       ],
-      "id": "ae9c596e-a721-4776-a86c-3a3fdd07be1b",
+      "id": "fd833c91-5cef-45cd-bfe3-fb8aeb508bb5",
       "onError": "continueRegularOutput"
     },
     {
       "parameters": {
         "authentication": "webhook",
-        "content": "={{ $('Loop Main Domain').item.json.domain }}\n{{ $json.message }}",
+        "content": "=\n🚨 Domain Error Report\n\n{{ $('Loop Over Items').item.json.domain }}\n❌ Error Code: {{ $json.error.code }}\n❌ Error Status: {{ $json.error.status }}\n📍 Destination: \n!!!!!",
         "options": {
           "wait": false
         }
@@ -302,10 +260,10 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        3020,
-        -780
+        -440,
+        340
       ],
-      "id": "02d12767-304f-4d4c-b714-23f234b49e76",
+      "id": "b5927075-7848-4ef6-89fc-9454d3dbe3ad",
       "name": "Log Images, IFrame",
       "webhookId": "e5912c40-c879-43c5-b221-82754de90ae6",
       "executeOnce": true,
@@ -325,11 +283,6 @@
               "value1": "={{ $json.statusCode }}",
               "operation": "equal",
               "value2": 200
-            },
-            {
-              "value1": "={{ $json.statusCode }}",
-              "operation": "equal",
-              "value2": 200
             }
           ]
         }
@@ -338,10 +291,233 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        2320,
-        -820
+        -660,
+        420
       ],
-      "id": "9825bfb4-f9b5-4290-b2c3-1e18b74a146f"
+      "id": "88f29fca-6f9f-4a7c-8532-6ba736278e6f"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Extract IFrame').item.json.iframe }}",
+        "responseFormat": "string",
+        "options": {
+          "fullResponse": true,
+          "followRedirect": true
+        }
+      },
+      "name": "Check IFRAMES",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -860,
+        620
+      ],
+      "id": "ed89443b-a0af-4532-bd4d-bf161ee6eaac",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=Domain: {{ $json.domain }}\nStatus: {{ $json.error.status }}\nLog: {{ $json.error.code }}\n////////////////////////////////",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -940,
+        940
+      ],
+      "id": "c7391e63-c76f-4b03-82a4-87beaf78cc3c",
+      "name": "Log Status SubDomain",
+      "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "zvzNGUOWjVLOpUv7",
+          "name": "Discord Webhook Web Status"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const domain = $('List Domains1').first().json['Domain '] || 'Unknown';\nlet message = '';\n\ntry {\n  const sitemapItem = $items(\"Get Sitemap XML\", 0)[0];\n  const sitemapError = sitemapItem?.json?.error;\n\n  if (sitemapError) {\n    const status = sitemapError.status || 'Unknown';\n    const code = sitemapError.code || 'Unknown';\n    message = `⚠️ Không tìm thấy sitemap!\\n🌐 Domain: ${domain}\\n❗ Status: ${status}\\n🔍 Code: ${code}`;\n  } else {\n    const inputError = $input.first()?.json?.error;\n    const status = inputError?.status || 'Unknown';\n    const code = inputError?.code || 'Unknown';\n    message = `⚠️ Không truy cập được website hoặc sitemap!\\n🌐 Domain: ${domain}\\n❗ Status: ${status}\\n🔍 Code: ${code}`;\n  }\n\n} catch (e) {\n  const inputError = $input.first()?.json?.error;\n  const status = inputError?.status || 'Unknown';\n  const code = inputError?.code || 'Unknown';\n  message = `🚫 Không truy cập được website!\\n🌐 Domain: ${domain}\\n❗ Status: ${status}\\n🔍 Code: ${code}`;\n}\n\nreturn [\n  {\n    json: {\n      content: message\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2780,
+        1170
+      ],
+      "id": "f89393d4-85c8-4fb7-b4ad-6fa3e6c94542",
+      "name": "Filter Status and Sitemap1"
+    },
+    {
+      "parameters": {
+        "content": "# Additional \n\n## - This is notification for web status and XML Site",
+        "height": 360,
+        "width": 440,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2780,
+        980
+      ],
+      "id": "9b4f3953-5b91-4c77-b295-dee9b8845135",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "# 3. Checking Site Status and XML \n\n## - Fetch HTML and get Status, also get XML file \n\n## - If Error(404) -> Notification on Status channel \n\n## - If Success -> Go to Check Images and IFrames ",
+        "height": 720,
+        "width": 480,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3300,
+        410
+      ],
+      "id": "5f5ac032-cd11-4d55-9554-f5373d86b5db",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# 1. Cron Jobs \n\n## - Schedule to scan WordPress site",
+        "height": 360,
+        "width": 260
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3960,
+        770
+      ],
+      "id": "d872ad86-70fe-4e7e-b5f8-27e5bf41efda",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# 2. Take and Split Domains\n\n## - Take Lists Domain from GG Sheet \n\n## - Parse list Domains to code\n\n## - Split domain to loop and run Workflow",
+        "height": 500,
+        "width": 420,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -3710,
+        630
+      ],
+      "id": "2285adae-c13c-42ad-8433-61708e4bbd34",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "# 5. Check Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Merge into one \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Check images and iframes by HTTP Request Nodes ",
+        "height": 860,
+        "width": 1140,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2200,
+        100
+      ],
+      "id": "a6aa12fb-eb38-4621-8e3c-f6486b5793d9",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# 6. Notifications \n\n## - After Check by HTTP Request. If there is no error from both Images and IFrame - go to \"true\" branches to run the next domain.\n\n## - If there is an error -> Notify to Discord Channel Images IFrame.\n\n## - Node Code to merge all the Error in one - prevent many notifications for many files.",
+        "height": 640,
+        "width": 860,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1060,
+        20
+      ],
+      "id": "d0bacd66-1ac4-4437-b614-a0aed5ff2810",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "# 4. Get sub url\n\n## - Parse code to extract all subsitemap\n\n## - Get all URL by HTTP Request \n\n## - Parse Code again to take URL only\n\n## - Check All Status of URL (If Error -> Notification)",
+        "height": 500,
+        "width": 640,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2840,
+        500
+      ],
+      "id": "71fb594c-c583-4e03-9c57-d79605d5ee91",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# 6. Back to Split Batch to run next Domain \n## It's Done :)",
+        "height": 380,
+        "width": 380,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -540,
+        920
+      ],
+      "id": "9c91e1dc-5f03-437a-b193-57dfd2d61efe",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1gTueOAEUnMkDds2fAxPGd09oPmKyQx53yRR5gEndwkE/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1gTueOAEUnMkDds2fAxPGd09oPmKyQx53yRR5gEndwkE/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -3660,
+        970
+      ],
+      "id": "8bd902a2-265d-47a8-b3c6-0553bdb2178e",
+      "name": "List Domains1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8RoPX4s8CW9ajkwn",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2120,
+        1060
+      ],
+      "id": "d3b72b6c-f8c8-42cf-85fa-8d4d68940996",
+      "name": "Loop Over Items"
     },
     {
       "parameters": {
@@ -381,43 +557,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1880,
-        -820
+        -1340,
+        640
       ],
-      "id": "0be8544c-e4a1-4c7b-a532-f9ae1833a59c",
-      "name": "Empty Array"
-    },
-    {
-      "parameters": {
-        "url": "={{ $('Extract IFrame').item.json.iframe }}",
-        "responseFormat": "string",
-        "options": {
-          "fullResponse": true,
-          "followRedirect": true
-        }
-      },
-      "name": "Check IFRAMES",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 1,
-      "position": [
-        2100,
-        -680
-      ],
-      "id": "acb440e8-bee1-4323-8330-7e62f353cf5e",
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
-        "jsCode": "const results = [];\nlet hasEmptyInput = false;\n\nfor (const item of items) {\n  const code = item.json.error?.code;\n  const input = item.json.error?.input;\n\n  \n  if (!input || input.trim() === '') {\n    hasEmptyInput = true;\n    break; \n  }\n\n  if (code) {\n    results.push(`❌ Error Code: ${code}\\n📍 Destination: ${input}`);\n  }\n}\n\n\nreturn [\n  {\n    json: {\n      message: results.length > 0 ? `🚨 Domain Error Report\\n\\n${results.join('\\n\\n')}` : '',\n      hasEmptyInput, \n    },\n  },\n];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2560,
-        -800
-      ],
-      "id": "3f3490e1-ac21-430e-b001-7df9b0b251ce",
-      "name": "Merge Error"
+      "id": "30ebd821-7748-4771-b129-9c5377458482",
+      "name": "Empty Array1"
     },
     {
       "parameters": {
@@ -430,12 +574,12 @@
           },
           "conditions": [
             {
-              "id": "f10f506f-6396-4a2a-a9f2-2e14858506a7",
-              "leftValue": "={{ $json.hasEmptyInput }}",
+              "id": "612c8a8d-f77a-4d21-a474-b785140179d9",
+              "leftValue": "={{ $json.image }}",
               "rightValue": "",
               "operator": {
-                "type": "boolean",
-                "operation": "true",
+                "type": "array",
+                "operation": "notEmpty",
                 "singleValue": true
               }
             }
@@ -447,46 +591,45 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2760,
-        -800
+        -1060,
+        440
       ],
-      "id": "b4f2fcd7-357f-4d59-b9a8-1c9e57b2ca95",
-      "name": "Check Empty File Error "
+      "id": "d99f917a-49f3-4a63-b4d2-7014470794fd",
+      "name": "If"
     },
     {
       "parameters": {
-        "authentication": "webhook",
-        "content": "=Domain: {{ $json.domain }}\nStatus: {{ $json.error.status }}\nLog: {{ $json.error.code }}\n////////////////////////////////",
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "612c8a8d-f77a-4d21-a474-b785140179d9",
+              "leftValue": "={{ $json.iframe }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
         "options": {}
       },
-      "type": "n8n-nodes-base.discord",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
       "position": [
-        1380,
-        -440
+        -1060,
+        800
       ],
-      "id": "d84b6181-2a9d-4f71-ae9d-ae6a0f0c0ee3",
-      "name": "Log Status SubDomain",
-      "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
-      "credentials": {
-        "discordWebhookApi": {
-          "id": "zvzNGUOWjVLOpUv7",
-          "name": "Discord Webhook Web Status"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const domain = $('Loop Main Domain').first().json.domain || 'Unknown';\nlet message = '';\n\ntry {\n  const sitemapOutput = $items(\"Get Sitemap XML\", 0)[0];\n  const sitemapError = sitemapOutput?.json?.error;\n\n\n  if (sitemapError) {\n    const status = sitemapError.status || 'Unknown';\n    const code = sitemapError.code || 'Unknown';\n    message = `⚠️ Không tìm thấy sitemap!\\n🌐 Domain: ${domain}\\n❗ Status: ${status}\\n🔍 Code: ${code}`;\n  } else {\n    const status = $input.first().json.error.status;\n    const code = $input.first().json.error.code;\n    message = `🚫 Không truy cập được website!\\n🌐 Domain: ${domain}\\n❗ Status: ${status}\\n🔍 Code: ${code}`;\n  }\n\n} catch (e) {\n  const status = $input.first().json.error.status;\n  const code = $input.first().json.error.code;\n  message = `🚫 Không truy cập được website!\\n🌐 Domain: ${domain}\\n❗ Status: ${status}\\n🔍 Code: ${code}`;\n}\n\nreturn [\n  {\n    json: {\n      content: message\n    }\n  }\n];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        480,
-        -220
-      ],
-      "id": "5fca2dfb-771d-4b5f-ac96-1138fbb1e246",
-      "name": "Filter Status and Sitemap1"
+      "id": "693b4a60-25b8-4925-850f-37f1347ac969",
+      "name": "If1"
     }
   ],
   "pinData": {},
@@ -509,31 +652,8 @@
         ]
       ]
     },
-    "List Domains": {
-      "main": [
-        [
-          {
-            "node": "Extract Main Domains",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Extract Main Domains": {
       "main": [
-        [
-          {
-            "node": "Loop Main Domain",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Main Domain": {
-      "main": [
-        [],
         [
           {
             "node": "Fetch Main Domain",
@@ -565,6 +685,17 @@
         ]
       ]
     },
+    "All URL": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Log Status": {
       "main": [
         [
@@ -580,18 +711,7 @@
       "main": [
         [
           {
-            "node": "List Domains",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "All URL": {
-      "main": [
-        [
-          {
-            "node": "Fetch Sub Domain",
+            "node": "List Domains1",
             "type": "main",
             "index": 0
           }
@@ -616,17 +736,6 @@
         ]
       ]
     },
-    "Sub Domain Loop ": {
-      "main": [
-        [
-          {
-            "node": "Loop Main Domain",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Extract Image": {
       "main": [
         [
@@ -645,6 +754,17 @@
             "node": "Merge",
             "type": "main",
             "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Empty Array1",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -705,30 +825,7 @@
         ],
         [
           {
-            "node": "Merge Error",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Empty Array": {
-      "main": [
-        [
-          {
-            "node": "Sub Domain Loop ",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Check IMAGES",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Check IFRAMES",
+            "node": "Log Images, IFrame",
             "type": "main",
             "index": 0
           }
@@ -740,46 +837,6 @@
         [
           {
             "node": "Check Error",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge Error": {
-      "main": [
-        [
-          {
-            "node": "Check Empty File Error ",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Check Empty File Error ": {
-      "main": [
-        [
-          {
-            "node": "Sub Domain Loop ",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Log Images, IFrame",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Empty Array",
             "type": "main",
             "index": 0
           }
@@ -807,17 +864,95 @@
           }
         ]
       ]
+    },
+    "List Domains1": {
+      "main": [
+        [
+          {
+            "node": "Extract Main Domains",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Fetch Sub Domain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sub Domain Loop ": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Empty Array1": {
+      "main": [
+        [
+          {
+            "node": "Sub Domain Loop ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Check IMAGES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Check IFRAMES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "b4f813b4-9dff-462a-8d6b-7a25e6584a49",
+  "versionId": "a3fe9434-108c-4d8a-8086-a46e71a7cf11",
   "meta": {
-    "templateCredsSetupCompleted": true,
     "instanceId": "67d647721e03059cdf108441440a2d41ef4810359836c5d00eac2393b27716f0"
   },
-  "id": "L05x76n57bOTb2qm",
+  "id": "4BDtW2Qc2RnpsL6V",
   "tags": []
 }
