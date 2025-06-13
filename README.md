@@ -6,7 +6,7 @@ Mô hình dưới đây sẽ hướng dẫn các bạn cách tạo workflow N8N 
 
 Mô hình tổng quan
 
-![image](https://github.com/user-attachments/assets/d1bd5c80-bd1e-4ec5-b13e-e542734cdd26)
+![image](https://github.com/user-attachments/assets/0de8e530-b9cb-4857-bcd1-4dc4afcb5d53)
 
 
 # Các bước thực hiện
@@ -51,20 +51,14 @@ return items.map(item => ({
   
 ![il6_Image_4](https://github.com/user-attachments/assets/f61b7c6d-9635-4236-9348-4390c4fc2682)
 
-</div>
+![image](https://github.com/user-attachments/assets/6e907f0e-6c51-4e60-b2b7-d34e42e4c066)
 
-Tiếp theo, sử dụng node loop với batch size là 1 để đảm bảo chạy workflow với 1 website mỗi lần
+</div>
 
 
 ## 3. Kiểm tra trạng thái website và trang XML 
 
 Trước khi kiểm tra Images và IFrames cần phải kiểm tra xem có truy cập được trang WordPress không. thêm 1 node HTTP Request để gửi yêu cầu HTTP đến website và trang XML. Nếu website có thể truy cập, thực hiện bước xuất ảnh và iFrame, nếu không, thực hiện thông báo vào Discord tại channel “Status”.
-
-<div align='center'>
-  
-![image](https://github.com/user-attachments/assets/7001b1ed-d577-48bb-acac-51564c5dc24e)
-
-</div> 
 
 Cấu hình node HTTP đó như sau. Lưu ý các trường sau:
 
@@ -75,6 +69,12 @@ Cấu hình node HTTP đó như sau. Lưu ý các trường sau:
 - Full Response: Nên bật để lấy thông tin Status và Error
 
 - Thực hiện tương tự với node của XML 
+
+<div align='center'>
+  
+![image](https://github.com/user-attachments/assets/edf0b902-a85c-47ca-ae6f-f3a47d2d7ce0)
+
+</div> 
 
 ## 4. Lấy toàn bộ Sub URL 
 
@@ -119,7 +119,15 @@ return results;
 ```
 
 Sau đó, kiểm tra tất cả URL này, nếu URL tồn tại và có thể truy cập, thực hiện bước tiếp theo, nếu có lỗi, gửi thông báo về discord
+<div align='center'>
+  
+![image](https://github.com/user-attachments/assets/38c59d57-6211-4730-9f58-13fbd854c8c2)
+
+</div>
+
 ## 5. Kiểm tra Images và IFrames
+
+Sử dụng Loop với Batch Size là 1 để tạo vòng lặp quét qua từng URL và lấy Images, IFrames bên trong (Nếu URL lỗi lập tức gửi thông báo)
 
 Lọc ra tất cả Images và IFrame từ trang web thành 2 mảng tương ứng. Thực hiện bằng cách sử dụng node HTML với lựa chọn “Extract HTML Content” và cấu hình như sau để lấy ảnh và iFrames.
 
@@ -147,58 +155,47 @@ Sau đó, dùng node merge thực hiện gộp tất cả lại dưới dạng S
 
 </div>
 
-Tại nhánh false, thực hiện kiểm tra bằng node HTTP Request giống như cách kiểm tra website từ trước đó. Cấu hình cho kiểm tra image như sau, thực hiện tương tự cho iframe.
+Tại nhánh false, thêm 2 node điều kiện để kiểm tra 1 trong 2 mảng trống, mảng nào trống sẽ bỏ qua không check tránh lỗi không mong muốn
 
 <div align='center'>
   
-![6os_Image_11](https://github.com/user-attachments/assets/fd6e6bd7-a982-47f7-a722-e7a79b3178c1)
+![image](https://github.com/user-attachments/assets/ef5d1f5c-7020-4c49-81b0-bbd75f258d0c)
+
+![image](https://github.com/user-attachments/assets/38252912-fe3e-46a9-afc7-99ef41099021)
 
 </div>
 
-Cuối cùng, sau khi kiểm tra, sử dụng IF node để lọc thông báo, nếu có 1 request bị error sẽ chạy nhánh false gửi thông báo về discord. Nếu cả 2 đều trả về status 200 thì sẽ chạy nhánh true quay lại vòng lặp
+<div align='center'>
+  
+![image](https://github.com/user-attachments/assets/1d884d19-e30f-4a9d-bdea-277b9fbf4f7c)
 
-## 6. Thông báo
+</div>
 
-Trước khi thông báo, chúng ta sẽ gộp tất cả lỗi lại qua node code để thông báo 1 lần thay vì từng tệp lỗi. Lưu ý, code sau đây sẽ thêm điều kiện để kiểm tra file trống, nếu file trống nó sẽ là cờ để thực hiện điều kiện IF sau để tránh thông báo lỗi vì file trống, Thực hiện code sau
 
-```
-const results = [];
-let hasEmptyInput = false;
+## 6. Kiểm tra và gửi thông báo
 
-for (const item of items) {
-  const code = item.json.error?.code;
-  const input = item.json.error?.input;
-
-  if (!input || input.trim() === '') {
-    hasEmptyInput = true;
-    break;
-  }
-
-  if (code) {
-    results.push(`❌ Error Code: ${code}\n📍 Destination: ${input}`);
-  }
-}
-
-return [
-  {
-    json: {
-      message: results.length > 0 ? `🚨 Domain Error Report\n\n${results.join('\n\n')}` : '',
-      hasEmptyInput,
-    },
-  },
-];
-```
-Cuối cùng thưc hiện thêm node Discord để gửi thông báo, bạn có thể lấy Webhook và thêm vào Credentials Discord. Gửi message về channel Images IFrame với format như sau. Lưu ý
-
-{{ $('Split Domains').item.json.domain }} : Là domain của website bị lỗi
-
-{{ $json.message }}: Là message sau khi được xử lý qua Code Node
+Thêm 2 node HTTP Request để tiến hành duyệt qua các Images và IFrames có trong mảng. Nếu không có lỗi sẽ quay lại vòng lặp, nếu có lỗi sẽ thông báo ngay lập tức về Discord
 
 <div align='center'>
 
-![9bf_Image_12](https://github.com/user-attachments/assets/23547d66-b427-4691-a75f-5f0eb5aab6a4)
+![image](https://github.com/user-attachments/assets/8ab49825-1013-42af-8b45-2f55a2ef329b)
+
+
+![image](https://github.com/user-attachments/assets/808e5c2a-6c3c-48ac-9f55-818e283eca31)
 
 </div>
+
+Thêm 1 node IF để check status. Cuối cùng thưc hiện thêm node Discord để gửi thông báo, bạn có thể lấy Webhook và thêm vào Credentials Discord. Gửi message về channel Images IFrame với format như sau
+
+```
+🚨 Domain Error Report
+
+{{ $('Loop Over Items').item.json.domain }}
+❌ Error Code: {{ $json.error.code }}
+❌ Error Status: {{ $json.error.status }}
+📍 Destination: 
+!!!!!
+```
 
 ## 7. Thông báo Status Web lỗi
 
