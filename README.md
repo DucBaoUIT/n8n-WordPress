@@ -6,7 +6,8 @@ Mô hình dưới đây sẽ hướng dẫn các bạn cách tạo workflow N8N 
 
 Mô hình tổng quan
 
-![2dh_Image_1](https://github.com/user-attachments/assets/252d3886-3dc4-4d56-aa8d-d0c42bc8f0ab)
+![image](https://github.com/user-attachments/assets/cb8354f8-bdc4-4bdd-ab89-c0c940a1852c)
+
 
 
 # Các bước thực hiện
@@ -55,13 +56,14 @@ return items.map(item => ({
 
 Tiếp theo, sử dụng node loop với batch size là 1 để đảm bảo chạy workflow với 1 website mỗi lần
 
-## 3. Kiểm tra trạng thái website
 
-Trước khi kiểm tra Images và IFrames cần phải kiểm tra xem có truy cập được trang WordPress không. thêm 1 node HTTP Request để gửi yêu cầu HTTP đến website. Nếu website có thể truy cập, thực hiện bước xuất ảnh và iFrame, nếu không, thực hiện thông báo vào Discord tại channel “Status”.
+## 3. Kiểm tra trạng thái website và trang XML 
+
+Trước khi kiểm tra Images và IFrames cần phải kiểm tra xem có truy cập được trang WordPress không. thêm 1 node HTTP Request để gửi yêu cầu HTTP đến website và trang XML. Nếu website có thể truy cập, thực hiện bước xuất ảnh và iFrame, nếu không, thực hiện thông báo vào Discord tại channel “Status”.
 
 <div align='center'>
   
-![8gx_Image_5](https://github.com/user-attachments/assets/2056bb70-688c-4277-8d72-c5a5c5e9efe8)
+![image](https://github.com/user-attachments/assets/7001b1ed-d577-48bb-acac-51564c5dc24e)
 
 </div> 
 
@@ -71,7 +73,7 @@ Cấu hình node HTTP đó như sau. Lưu ý các trường sau:
 
 - URL: Bạn có thể thực hiện kéo thả từ domain ở bước Split Domain vào
 
-- Full Response: Nên bật để lấy thoogn tin Status và Error
+- Full Response: Nên bật để lấy thông tin Status và Error
 
 <div align='center>
 
@@ -79,9 +81,15 @@ Cấu hình node HTTP đó như sau. Lưu ý các trường sau:
 
 </div>
 
-## 4. Kiểm tra Images và IFrames
+- Thực hiện tương tự với node của XML 
 
-Lọc ra tất cả Images và IFrame từ trang web thành 2 mảng tương ứng. Thwujc hiện bằng cách sử dụng node HTML với lựa chọn “Extract HTML Content” và cấu hình như sau để lấy ảnh và iFrames.
+## 4. Lấy toàn bộ Sub URL 
+
+
+
+## 5. Kiểm tra Images và IFrames
+
+Lọc ra tất cả Images và IFrame từ trang web thành 2 mảng tương ứng. Thực hiện bằng cách sử dụng node HTML với lựa chọn “Extract HTML Content” và cấu hình như sau để lấy ảnh và iFrames.
 
 <div align='center'>
   
@@ -117,7 +125,7 @@ Tại nhánh false, thực hiện kiểm tra bằng node HTTP Request giống nh
 
 Cuối cùng, sau khi kiểm tra, sử dụng IF node để lọc thông báo, nếu có 1 request bị error sẽ chạy nhánh false gửi thông báo về discord. Nếu cả 2 đều trả về status 200 thì sẽ chạy nhánh true quay lại vòng lặp
 
-## 5. Thông báo
+## 6. Thông báo
 
 Trước khi thông báo, chúng ta sẽ gộp tất cả lỗi lại qua node code để thông báo 1 lần thay vì từng tệp lỗi. Lưu ý, code sau đây sẽ thêm điều kiện để kiểm tra file trống, nếu file trống nó sẽ là cờ để thực hiện điều kiện IF sau để tránh thông báo lỗi vì file trống, Thực hiện code sau
 
@@ -160,7 +168,7 @@ Cuối cùng thưc hiện thêm node Discord để gửi thông báo, bạn có 
 
 </div>
 
-## 6. Thông báo Status Web lỗi
+## 7. Thông báo Status Web lỗi
 
 Cấu hình thông báo lỗi như sau. Chú thích
 
