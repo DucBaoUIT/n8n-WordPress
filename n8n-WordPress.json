@@ -27,8 +27,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3440,
-        970
+        -3460,
+        980
       ],
       "id": "09a210af-0e09-4b9e-b8d9-b273223ec373",
       "name": "Extract Main Domains"
@@ -144,7 +144,7 @@
       "typeVersion": 1,
       "position": [
         -340,
-        1100
+        1160
       ],
       "id": "02a7c4fb-a70b-46dd-9949-27480ffcae59"
     },
@@ -224,7 +224,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -1980,
+        -2020,
         660
       ],
       "id": "375fcc54-aba6-4d4e-bb24-85d7fdc9252a",
@@ -324,8 +324,8 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -940,
-        940
+        -1320,
+        860
       ],
       "id": "c7391e63-c76f-4b03-82a4-87beaf78cc3c",
       "name": "Log Status SubDomain",
@@ -399,7 +399,7 @@
     },
     {
       "parameters": {
-        "content": "# 2. Take and Split Domains\n\n## - Take Lists Domain from GG Sheet \n\n## - Parse list Domains to code\n\n## - Split domain to loop and run Workflow",
+        "content": "# 2. Take and Split Domains\n\n## - Take Lists Domain from GG Sheet \n\n## - Parse list Domains to code\n",
         "height": 500,
         "width": 420,
         "color": 2
@@ -417,7 +417,7 @@
       "parameters": {
         "content": "# 5. Check Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Merge into one \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Check images and iframes by HTTP Request Nodes ",
         "height": 860,
-        "width": 1140,
+        "width": 1280,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -432,22 +432,22 @@
     {
       "parameters": {
         "content": "# 6. Notifications \n\n## - After Check by HTTP Request. If there is no error from both Images and IFrame - go to \"true\" branches to run the next domain.\n\n## - If there is an error -> Notify to Discord Channel Images IFrame.\n\n## - Node Code to merge all the Error in one - prevent many notifications for many files.",
-        "height": 640,
-        "width": 860,
+        "height": 820,
+        "width": 620,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1060,
-        20
+        -900,
+        -80
       ],
       "id": "d0bacd66-1ac4-4437-b614-a0aed5ff2810",
       "name": "Sticky Note5"
     },
     {
       "parameters": {
-        "content": "# 4. Get sub url\n\n## - Parse code to extract all subsitemap\n\n## - Get all URL by HTTP Request \n\n## - Parse Code again to take URL only\n\n## - Check All Status of URL (If Error -> Notification)",
+        "content": "# 4. Get sub url\n\n## - Parse code to extract all subsitemap\n\n## - Get all URL by HTTP Request \n\n## - Parse Code again to take URL only",
         "height": 500,
         "width": 640,
         "color": 6
@@ -471,8 +471,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -540,
-        920
+        -580,
+        960
       ],
       "id": "9c91e1dc-5f03-437a-b193-57dfd2d61efe",
       "name": "Sticky Note7"
@@ -513,8 +513,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -2120,
-        1060
+        -2160,
+        860
       ],
       "id": "d3b72b6c-f8c8-42cf-85fa-8d4d68940996",
       "name": "Loop Over Items"
@@ -949,7 +949,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "a3fe9434-108c-4d8a-8086-a46e71a7cf11",
+  "versionId": "5cd6c238-0390-4013-9a4c-d6c79ea84efe",
   "meta": {
     "instanceId": "67d647721e03059cdf108441440a2d41ef4810359836c5d00eac2393b27716f0"
   },
