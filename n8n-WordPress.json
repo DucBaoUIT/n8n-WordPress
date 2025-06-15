@@ -79,7 +79,7 @@
     {
       "parameters": {
         "authentication": "webhook",
-        "content": "={{ $json.content }}\n/////////////////////////////////////",
+        "content": "=Domain: {{ $('Extract Main Domains').item.json.domain }}/wp-sitemap.xml\nError Code: {{ $json.error.code }}\nError Status: {{ $json.error.status }}\n!!! Please check sitemap of your domain\n/////////////////////////////////////",
         "options": {}
       },
       "type": "n8n-nodes-base.discord",
@@ -143,8 +143,8 @@
       "name": "Sub Domain Loop ",
       "typeVersion": 1,
       "position": [
-        -340,
-        1160
+        -380,
+        1180
       ],
       "id": "02a7c4fb-a70b-46dd-9949-27480ffcae59"
     },
@@ -252,16 +252,21 @@
     {
       "parameters": {
         "authentication": "webhook",
-        "content": "=\n🚨 Domain Error Report\n\n{{ $('Loop Over Items').item.json.domain }}\n❌ Error Code: {{ $json.error.code }}\n❌ Error Status: {{ $json.error.status }}\n📍 Destination: \n!!!!!",
+        "content": "=\n🚨 Domain Error on Images IFrames Report\n\n{{ $('Loop Over Items').item.json.domain }}\n❌ Error Code: {{ $('Check Error').item.json.error.code }}\n❌ Error Status: {{ $('Check Error').item.json.error.status }}\n📍 Destination: {{ $json.error.input }}\n!!!!!",
         "options": {
           "wait": false
+        },
+        "embeds": {
+          "values": [
+            {}
+          ]
         }
       },
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -440,
-        340
+        -480,
+        400
       ],
       "id": "b5927075-7848-4ef6-89fc-9454d3dbe3ad",
       "name": "Log Images, IFrame",
@@ -281,7 +286,7 @@
           "number": [
             {
               "value1": "={{ $json.statusCode }}",
-              "operation": "equal",
+              "operation": "notEqual",
               "value2": 200
             }
           ]
@@ -324,8 +329,8 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -1320,
-        860
+        -1160,
+        1000
       ],
       "id": "c7391e63-c76f-4b03-82a4-87beaf78cc3c",
       "name": "Log Status SubDomain",
@@ -336,19 +341,6 @@
           "name": "Discord Webhook Web Status"
         }
       }
-    },
-    {
-      "parameters": {
-        "jsCode": "const domain = $('List Domains1').first().json['Domain '] || 'Unknown';\nlet message = '';\n\ntry {\n  const sitemapItem = $items(\"Get Sitemap XML\", 0)[0];\n  const sitemapError = sitemapItem?.json?.error;\n\n  if (sitemapError) {\n    const status = sitemapError.status || 'Unknown';\n    const code = sitemapError.code || 'Unknown';\n    message = `⚠️ Không tìm thấy sitemap!\\n🌐 Domain: ${domain}\\n❗ Status: ${status}\\n🔍 Code: ${code}`;\n  } else {\n    const inputError = $input.first()?.json?.error;\n    const status = inputError?.status || 'Unknown';\n    const code = inputError?.code || 'Unknown';\n    message = `⚠️ Không truy cập được website hoặc sitemap!\\n🌐 Domain: ${domain}\\n❗ Status: ${status}\\n🔍 Code: ${code}`;\n  }\n\n} catch (e) {\n  const inputError = $input.first()?.json?.error;\n  const status = inputError?.status || 'Unknown';\n  const code = inputError?.code || 'Unknown';\n  message = `🚫 Không truy cập được website!\\n🌐 Domain: ${domain}\\n❗ Status: ${status}\\n🔍 Code: ${code}`;\n}\n\nreturn [\n  {\n    json: {\n      content: message\n    }\n  }\n];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -2780,
-        1170
-      ],
-      "id": "f89393d4-85c8-4fb7-b4ad-6fa3e6c94542",
-      "name": "Filter Status and Sitemap1"
     },
     {
       "parameters": {
@@ -415,7 +407,7 @@
     },
     {
       "parameters": {
-        "content": "# 5. Check Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Merge into one \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Check images and iframes by HTTP Request Nodes ",
+        "content": "# 5. Extract Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Merge into one \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Check images and iframes by HTTP Request Nodes ",
         "height": 860,
         "width": 1280,
         "color": 4
@@ -431,16 +423,16 @@
     },
     {
       "parameters": {
-        "content": "# 6. Notifications \n\n## - After Check by HTTP Request. If there is no error from both Images and IFrame - go to \"true\" branches to run the next domain.\n\n## - If there is an error -> Notify to Discord Channel Images IFrame.\n\n## - Node Code to merge all the Error in one - prevent many notifications for many files.",
-        "height": 820,
+        "content": "# 6. Notifications \n\n## - After Check by HTTP Request. If there is no error from both Images and IFrame - go to \"true\" branches to run the next domain.\n\n## - If there is an error -> Notify to Discord Channel Images IFrame.\n",
+        "height": 720,
         "width": 620,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -900,
-        -80
+        -920,
+        20
       ],
       "id": "d0bacd66-1ac4-4437-b614-a0aed5ff2810",
       "name": "Sticky Note5"
@@ -463,7 +455,7 @@
     },
     {
       "parameters": {
-        "content": "# 6. Back to Split Batch to run next Domain \n## It's Done :)",
+        "content": "# Back to Split Batch to run next Domain \n## It's Done :)",
         "height": 380,
         "width": 380,
         "color": 6
@@ -471,7 +463,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -580,
+        -600,
         960
       ],
       "id": "9c91e1dc-5f03-437a-b193-57dfd2d61efe",
@@ -645,7 +637,7 @@
         ],
         [
           {
-            "node": "Filter Status and Sitemap1",
+            "node": "Log Status",
             "type": "main",
             "index": 0
           }
@@ -729,7 +721,7 @@
         ],
         [
           {
-            "node": "Filter Status and Sitemap1",
+            "node": "Log Status SubDomain",
             "type": "main",
             "index": 0
           }
@@ -818,14 +810,14 @@
       "main": [
         [
           {
-            "node": "Sub Domain Loop ",
+            "node": "Log Images, IFrame",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Log Images, IFrame",
+            "node": "Sub Domain Loop ",
             "type": "main",
             "index": 0
           }
@@ -848,17 +840,6 @@
         [
           {
             "node": "Sub Domain Loop ",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Filter Status and Sitemap1": {
-      "main": [
-        [
-          {
-            "node": "Log Status",
             "type": "main",
             "index": 0
           }
@@ -949,7 +930,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "5cd6c238-0390-4013-9a4c-d6c79ea84efe",
+  "versionId": "175eb7f9-262f-41d8-8d77-1a9351a51935",
   "meta": {
     "instanceId": "67d647721e03059cdf108441440a2d41ef4810359836c5d00eac2393b27716f0"
   },
