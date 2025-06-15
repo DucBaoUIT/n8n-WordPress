@@ -2,12 +2,63 @@
 
 n8n là một nền tảng tự động hóa quy trình làm việc mã nguồn mở, cho phép bạn kết nối và tự động hóa các ứng dụng, dịch vụ web thông qua giao diện trực quan, không yêu cầu kỹ năng lập trình chuyên sâu. Công cụ này giúp chuyển đổi các tác vụ thủ công, lặp lại thành các luồng công việc tự động hiệu quả
 
-Mô hình dưới đây sẽ hướng dẫn các bạn cách tạo workflow N8N để kiểm tra website WordPress có bị lỗi images và iframes hay không.
+Mô hình dưới đây sẽ hướng dẫn các bạn cách tạo workflow N8N để kiểm tra website WordPress và các website con có bị lỗi images và iframes hay không.
 
 Mô hình tổng quan
 
 ![image](https://github.com/user-attachments/assets/0de8e530-b9cb-4857-bcd1-4dc4afcb5d53)
 
+Quy trình thực hiện mô hình sẽ bao gồm 6 bước chính với các node cụ thể
+
+1. Bước 1 - Lên lịch để thực hiện kiểm tra định kì
+
+Node 1: Cron Jobs - Đây là 1 trong những node trigger của n8n được sử dụng để trigger workflow chạy theo định kì được cấu hình
+
+2. Bước 2 - Lấy tất cả Domain
+
+Node 1: Google Sheets - Sử dụng node này để lấy tất cả Domain tron Google Sheets 
+
+Node 2: Code - Tạo ra đoạn mã JavaScript để parse tất cả Domain trong Google Sheets thành dạng code sử dụng cho Workflow
+
+3. Bước 3 - Kiểm tra trạng thái kết nối các Domain và kiểm tra sự tồn tại của site XML
+
+Node 1: HTTP Request - Gửi các request đến các website và kiểm tra phản hồi, nếu trạng thái status lỗi sẽ thông báo về Discord channel "Status", nếu không có lỗi sẽ thực hiện node kế
+
+Node 2: HTTP Request - Gửi các request để kiểm tra xem tính năng để xem website XML đã bật chưa, nếu chưa thực hiện báo về Discord channel "Status", nếu không có lỗi sang bước 4
+
+Node 3: Code - Thực hiện phân loại lỗi của website (Node 1) hay lỗi của XML (Node 2) để trả về thông báo 
+
+Node 4: Discord - Gửi thông báo qua message được trả về từ node Code
+
+4. Lấy toàn bộ tên miền con từ website gốc
+
+Node 1: Code - Sử dụng Code JavaScript để tách toàn bộ các site Sub XML từ kết quả trả về của node HTTP Request trước
+
+Node 2: HTTP Request - Gửi request đến toàn bộ site sub XML để kiểm tra trạng thái truy cập và lấy tất cả Domain trong đó
+
+Node 3: Code - Sử dụng code JavaScript để lấy toàn bộ domain từ sub XML (Cũng là toàn bộ Domain của website)
+
+5. Tách Images và IFrames
+
+Node 1: Loop Over Items - Sử dụng node này để tách tất cả giá trị domain lấy từ bước trước ra để chạy kiểm tra, thay vì kiểm tra tổng thể (khi lỗi sẽ khó xác định site lỗi)
+
+Node 2: HTTP Request - Gửi request về domain này để đảm bảo tính truy cập, nếu có error status sẽ gửi thông báo Discord channel "Status" 
+
+Node 3 - Node 4: HTML - Sử dụng 2 Node này để tách và lấy toàn bộ images và iframes từ kết quả trả về của node trước. Kết quả tra về sẽ là 2 mảng có giá trị images và iframes
+
+Node 5: Node Merge - Gộp 2 mảng lại 
+
+Node 6: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả 2 mảng đều rỗng thì quay lại vòng lặp, nếu không sẽ thực hiện node tiếp theo 
+
+Node 7 - Node 8: IF - Sử dụng node điều kiện để kiểm tra trống Images và IFrame tránh việc quét báo lỗi, nếu mảng trống thì bỏ qua, nếu mảng tồn tại thì đến bước kiểm tra 
+
+6. Kiểm tra và thông báo 
+
+Node 1 - Node 2: HTTP Request - Sử dụng 2 node này để request đến hình ảnh và iframe của trang web
+
+Node 3: IF - Sử dụng node điều kiện để kiểm tra nếu tồn tại lỗi sẽ gửi thông báo về Discord, nếu không sẽ quay lại vòng lặp
+
+Node 4: Discord - Sử dụng để gửi thông báo lỗi tới channel Images, IFrames
 
 # Các bước thực hiện
 
