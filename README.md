@@ -6,7 +6,7 @@ Mô hình dưới đây sẽ hướng dẫn các bạn cách tạo workflow N8N 
 
 Mô hình tổng quan
 
-![image](https://github.com/user-attachments/assets/c16440df-19c3-4672-8508-3f5713b569ce)
+![image](https://github.com/user-attachments/assets/c3d748cb-f965-4277-855d-11a6b54ecb0e)
 
 Quy trình thực hiện mô hình sẽ bao gồm 6 bước chính với các node cụ thể
 
@@ -317,7 +317,7 @@ return items.map(item => {
 
 <div align='center'>
 
-![8cX_Image_10](https://github.com/user-attachments/assets/7fd9c23f-32c1-4e66-940e-165fc00af235)
+![image](https://github.com/user-attachments/assets/16580317-a154-4125-bcc2-af957cfeb7bd)
 
 </div>
 
@@ -474,7 +474,7 @@ Workflow sẽ chạy đúng quy trình tất cả các bước và đi vào ra n
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/3c8706a3-108e-4323-a4dc-4483abe9baea)
+![image](https://github.com/user-attachments/assets/232d8871-60e1-4a15-baec-9123dc3ce385)
 
 </div>
 
@@ -492,6 +492,6 @@ Workflow khi này sẽ không chạy vào các nhánh báo lỗi nữa
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/86568193-f474-47c6-8fc4-ad47ce597344)
+![image](https://github.com/user-attachments/assets/50fbe89d-3d41-4844-a86d-35befd6304a4)
 
 <div>
