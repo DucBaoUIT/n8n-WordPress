@@ -7,7 +7,8 @@
         "responseFormat": "string",
         "options": {
           "fullResponse": true,
-          "followRedirect": true
+          "followAllRedirects": true,
+          "followRedirect": false
         }
       },
       "id": "f93fc12d-96b9-42bb-8037-3cd5ce8fe610",
@@ -120,11 +121,16 @@
     },
     {
       "parameters": {
+        "requestMethod": "POST",
         "url": "={{$json.domain}}",
+        "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
           "fullResponse": true,
-          "followRedirect": true
+          "followAllRedirects": true,
+          "followRedirect": false,
+          "ignoreResponseCode": false,
+          "useQueryString": false
         }
       },
       "name": "Fetch Main Domain",
@@ -135,6 +141,8 @@
         980
       ],
       "id": "df20962c-0dad-488d-90dc-b5a70f91dad4",
+      "retryOnFail": true,
+      "alwaysOutputData": false,
       "onError": "continueErrorOutput"
     },
     {
@@ -213,11 +221,15 @@
     },
     {
       "parameters": {
+        "requestMethod": "POST",
         "url": "={{ $json.domain }}",
+        "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
           "fullResponse": true,
-          "followRedirect": true
+          "followAllRedirects": true,
+          "followRedirect": false,
+          "ignoreResponseCode": false
         }
       },
       "name": "Fetch Sub Domain",
@@ -233,18 +245,21 @@
     {
       "parameters": {
         "url": "={{ $json.image }}",
+        "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
+          "batchInterval": 1000,
           "fullResponse": true,
-          "followRedirect": true
+          "followAllRedirects": true,
+          "followRedirect": false
         }
       },
       "name": "Check IMAGES",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -860,
-        320
+        -840,
+        420
       ],
       "id": "fd833c91-5cef-45cd-bfe3-fb8aeb508bb5",
       "onError": "continueRegularOutput"
@@ -314,7 +329,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -860,
+        -840,
         620
       ],
       "id": "ed89443b-a0af-4532-bd4d-bf161ee6eaac",
@@ -361,7 +376,7 @@
     {
       "parameters": {
         "content": "# 3. Checking Site Status and XML \n\n## - Fetch HTML and get Status, also get XML file \n\n## - If Error(404) -> Notification on Status channel \n\n## - If Success -> Go to Check Images and IFrames ",
-        "height": 720,
+        "height": 580,
         "width": 480,
         "color": 3
       },
@@ -369,7 +384,7 @@
       "typeVersion": 1,
       "position": [
         -3300,
-        410
+        550
       ],
       "id": "5f5ac032-cd11-4d55-9554-f5373d86b5db",
       "name": "Sticky Note"
@@ -407,8 +422,8 @@
     },
     {
       "parameters": {
-        "content": "# 5. Extract Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Merge into one \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Check images and iframes by HTTP Request Nodes ",
-        "height": 860,
+        "content": "# 5. Extract Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Merge into one \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Check images and iframes",
+        "height": 840,
         "width": 1280,
         "color": 4
       },
@@ -416,7 +431,7 @@
       "typeVersion": 1,
       "position": [
         -2200,
-        100
+        160
       ],
       "id": "a6aa12fb-eb38-4621-8e3c-f6486b5793d9",
       "name": "Sticky Note4"
@@ -583,8 +598,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1060,
-        440
+        -1180,
+        500
       ],
       "id": "d99f917a-49f3-4a63-b4d2-7014470794fd",
       "name": "If"
@@ -617,11 +632,39 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1060,
+        -1180,
         800
       ],
       "id": "693b4a60-25b8-4925-850f-37f1347ac969",
       "name": "If1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "image",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        420
+      ],
+      "id": "22b04d2d-6eb8-440c-a546-2c18d5cc0e7b",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "iframe",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1020,
+        620
+      ],
+      "id": "e2c6128f-5c54-4024-b578-c03b42a65f16",
+      "name": "Split Out1"
     }
   ],
   "pinData": {},
@@ -907,7 +950,7 @@
       "main": [
         [
           {
-            "node": "Check IMAGES",
+            "node": "Split Out",
             "type": "main",
             "index": 0
           }
@@ -915,6 +958,28 @@
       ]
     },
     "If1": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Check IMAGES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
       "main": [
         [
           {
@@ -930,7 +995,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "175eb7f9-262f-41d8-8d77-1a9351a51935",
+  "versionId": "9e3841cd-07d7-4352-a46a-8bcca49ab3d6",
   "meta": {
     "instanceId": "67d647721e03059cdf108441440a2d41ef4810359836c5d00eac2393b27716f0"
   },
