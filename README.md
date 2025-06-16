@@ -44,7 +44,7 @@ Node 2: HTTP Request - Gửi request về domain này để đảm bảo tính t
 
 Node 3 - Node 4: HTML - Sử dụng 2 Node này để tách và lấy toàn bộ images và iframes từ kết quả trả về của node trước. Kết quả tra về sẽ là 2 mảng có giá trị images và iframes
 
-Node 5: Node Code - Lọc các Data URI từ image
+Node 5: Node Code - Lọc các Data URI từ image và thêm đường dẫn http: cho các website chưa có 
 
 Node 6: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả 2 mảng đều rỗng thì quay lại vòng lặp, nếu không sẽ thực hiện node tiếp theo 
 
@@ -278,14 +278,26 @@ Lọc ra tất cả Images và IFrame từ trang web thành 2 mảng tương ứ
 
 </div>
 
-### Node 5: Node Code - Lọc Data URI 
+### Node 5: Node Code - Lọc Data URI và thêm đường dẫn cho các image chưa có
 
-Sử dụng code sau để lọc các data URI có trong mảng 
+Sử dụng code sau
 
 ```
 return items.map(item => {
   const images = item.json.image || [];
-  const filtered = images.filter(src => !src.startsWith('data:'));
+
+  const filtered = images
+    .filter(src => typeof src === 'string' && !src.startsWith('data:')) // loại bỏ base64
+    .map(src => {
+      if (src.startsWith('//')) {
+        return 'https:' + src;
+      }
+      if (!src.startsWith('http')) {
+        return 'https://' + src;
+      }
+      return src;
+    });
+
   return {
     json: {
       ...item.json,
@@ -293,7 +305,6 @@ return items.map(item => {
     },
   };
 });
-
 ```
 
 <div align='center'>
