@@ -3,7 +3,8 @@
   "nodes": [
     {
       "parameters": {
-        "url": "={{ $('Extract Main Domains').item.json.domain + '/wp-sitemap.xml' }}",
+        "url": "={{ $('Extract Main Domains').item.json.domain + '/sitemap.xml' }}",
+        "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
           "fullResponse": true,
@@ -80,7 +81,7 @@
     {
       "parameters": {
         "authentication": "webhook",
-        "content": "=Domain: {{ $('Extract Main Domains').item.json.domain }}/wp-sitemap.xml\nError Code: {{ $json.error.code }}\nError Status: {{ $json.error.status }}\n!!! Please check sitemap of your domain\n/////////////////////////////////////",
+        "content": "=Domain: {{ $('Extract Main Domains').item.json.domain }}/sitemap.xml\nError Code: {{ $json.error.code }}\nError Status: {{ $json.error.status }}\n!!! Please check sitemap of your domain\n/////////////////////////////////////",
         "options": {}
       },
       "type": "n8n-nodes-base.discord",
@@ -995,7 +996,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "9e3841cd-07d7-4352-a46a-8bcca49ab3d6",
+  "versionId": "e0cc3f04-7553-401b-a5a0-ccd9dba57a03",
   "meta": {
     "instanceId": "67d647721e03059cdf108441440a2d41ef4810359836c5d00eac2393b27716f0"
   },
