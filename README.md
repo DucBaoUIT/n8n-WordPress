@@ -242,7 +242,7 @@ return results;
 
 <div align='center'>
   
-![image](https://github.com/user-attachments/assets/7b9c113e-09bc-4ab9-9393-115ccdc48bf6)
+![image](https://github.com/user-attachments/assets/22657da4-e7c9-4c24-905e-1ecda612611a)
 
 </div>
 
@@ -278,13 +278,27 @@ Lọc ra tất cả Images và IFrame từ trang web thành 2 mảng tương ứ
 
 </div>
 
-### Node 5: Node Merge - Gộp 2 mảng lại 
+### Node 5: Node Code - Lọc Data URI 
 
-Sau đó, dùng node merge thực hiện gộp tất cả lại dưới dạng SQL. Nếu bạn sử dụng 2 input thì sử dụng lệnh mặc định của node vẫn chạy được. Thu được output như sau:
+Sử dụng code sau để lọc các data URI có trong mảng 
+
+```
+return items.map(item => {
+  const images = item.json.image || [];
+  const filtered = images.filter(src => !src.startsWith('data:'));
+  return {
+    json: {
+      ...item.json,
+      image: filtered,
+    },
+  };
+});
+
+```
 
 <div align='center'>
 
-![LoF_Image_9](https://github.com/user-attachments/assets/b91c79ed-6058-4836-b5d0-b1644707df65)
+![image](https://github.com/user-attachments/assets/988d3044-da24-40eb-87d6-9dad5964fe07)
 
 </div>
 
