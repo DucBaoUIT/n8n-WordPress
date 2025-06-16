@@ -155,7 +155,7 @@ Cấu hình node HTTP đó như sau. Lưu ý các trường sau:
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/c7c47919-5523-41e8-9773-25efc0ed1cfe)
+![image](https://github.com/user-attachments/assets/4179c96b-4844-4540-b6af-a60efc1d478d)
 
 </div>
 
@@ -169,7 +169,7 @@ Phần Message của node Discord sẽ cấu hình như ảnh bên dưới. Lưu
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/f5aff5b7-59ff-466d-a662-c092bc9d92f9)
+![image](https://github.com/user-attachments/assets/464df7d0-7818-4d5e-8c1b-865d3acb172a)
 
 </div>
 
