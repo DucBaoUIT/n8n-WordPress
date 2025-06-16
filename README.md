@@ -42,17 +42,17 @@ Node 1: Loop Over Items - Sử dụng node này để tách tất cả giá tr�
 
 Node 2: HTTP Request - Gửi request về domain này để đảm bảo tính truy cập, nếu có error status sẽ gửi thông báo Discord channel "Status" 
 
-Node 3 - Node 4: HTML - Sử dụng 2 Node này để tách và lấy toàn bộ images và iframes từ kết quả trả về của node trước. Kết quả tra về sẽ là 2 mảng có giá trị images và iframes
+Node 3: HTML - Sử dụng 2 Node này để tách và lấy toàn bộ images và iframes từ kết quả trả về của node trước. Kết quả tra về sẽ là 2 mảng có giá trị images và iframes
 
-Node 5: Node Code - Lọc các Data URI từ image và thêm đường dẫn http: cho các website chưa có 
+Node 4: Node Code - Lọc các Data URI từ image và thêm đường dẫn http: cho các website chưa có 
 
-Node 6: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả 2 mảng đều rỗng thì quay lại vòng lặp, nếu không sẽ thực hiện node tiếp theo 
+Node 5: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả 2 mảng đều rỗng thì quay lại vòng lặp, nếu không sẽ thực hiện node tiếp theo 
 
-Node 7 - Node 8: IF - Sử dụng node điều kiện để kiểm tra trống Images và IFrame tránh việc quét báo lỗi, nếu mảng trống thì bỏ qua, nếu mảng tồn tại thì đến bước kiểm tra 
+Node 6 - Node 7: IF - Sử dụng node điều kiện để kiểm tra trống Images và IFrame tránh việc quét báo lỗi, nếu mảng trống thì bỏ qua, nếu mảng tồn tại thì đến bước kiểm tra 
 
-Node 9: Discord - Gửi thông báo nếu Node 2 có website lỗi 
+Node 8: Discord - Gửi thông báo nếu Node 2 có website lỗi 
 
-Node 10 - Node 11: Split Out - Dùng 2 node này để tách mảng ra thành từng thành phần images và iframes tránh việc xử lý quá tải ở bước tiếp theo
+Node 9 - Node 10: Split Out - Dùng 2 node này để tách mảng ra thành từng thành phần images và iframes tránh việc xử lý quá tải ở bước tiếp theo
 
 6. Kiểm tra và thông báo 
 
@@ -272,13 +272,11 @@ Lọc ra tất cả Images và IFrame từ trang web thành 2 mảng tương ứ
 
 <div align='center'>
   
-![IjB_Image_7](https://github.com/user-attachments/assets/7262a27f-21e3-4c89-995e-fdac151532cf)
-
-![FoL_Image_8](https://github.com/user-attachments/assets/0c03b150-82c9-4120-826d-ef4705784ef9)
+![Screenshot from 2025-06-16 14-53-19](https://github.com/user-attachments/assets/a13b8488-f3ba-4e55-93d4-ff77052a1a7e)
 
 </div>
 
-### Node 5: Node Code - Lọc Data URI và thêm đường dẫn cho các image chưa có
+### Node 4: Node Code - Lọc Data URI và thêm đường dẫn cho các image chưa có
 
 Sử dụng code sau
 
@@ -313,7 +311,7 @@ return items.map(item => {
 
 </div>
 
-### Node 6: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả 2 mảng đều rỗng thì quay lại vòng lặp, nếu không sẽ thực hiện node tiếp theo 
+### Node 5: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả 2 mảng đều rỗng thì quay lại vòng lặp, nếu không sẽ thực hiện node tiếp theo 
 
 Để tránh trường hợp Website không có hình ảnh và không có iFrame để kiểm tra, thêm node IF với điều kiện các mảng trống, nếu các mảng trống thì sẽ chạy nhánh “True” quay về vòng lặp thực hiện kiểm tra website tiếp theo. Nếu 1 trong 2 mảng có phần tử thì sẽ chạy nhanh false để kiểm tra. Các trường json bạn có thể kéo thả từ bước gộp trước. Lưu ý, chon kiểu dữ liệu là mảng để tránh lỗi.
 
@@ -323,7 +321,7 @@ return items.map(item => {
 
 </div>
 
-### Node 7 - Node 8: IF - Sử dụng node điều kiện để kiểm tra trống Images và IFrame tránh việc quét báo lỗi, nếu mảng trống thì bỏ qua, nếu mảng tồn tại thì đến bước kiểm tra 
+### Node 6 - Node 7: IF - Sử dụng node điều kiện để kiểm tra trống Images và IFrame tránh việc quét báo lỗi, nếu mảng trống thì bỏ qua, nếu mảng tồn tại thì đến bước kiểm tra 
 
 Tại nhánh false, thêm 2 node điều kiện để kiểm tra 1 trong 2 mảng trống, mảng nào trống sẽ bỏ qua không check tránh lỗi không mong muốn
 
@@ -335,7 +333,7 @@ Tại nhánh false, thêm 2 node điều kiện để kiểm tra 1 trong 2 mản
 
 </div>
 
-### Node 9: Discord - Gửi thông báo nếu Node 2 có website lỗi 
+### Node 8: Discord - Gửi thông báo nếu Node 2 có website lỗi 
 
 Tại Message của Node Discord, cấu hình như sau. Lưu ý
 
@@ -356,7 +354,7 @@ Log: {{ $json.error.code }}
 
 </div>
 
-### Node 10 - Node 11: Split Out - Dùng 2 node này để tách mảng ra thành từng thành phần images và iframes tránh việc xử lý quá tải ở bước tiếp theo
+### Node 9 - Node 10: Split Out - Dùng 2 node này để tách mảng ra thành từng thành phần images và iframes tránh việc xử lý quá tải ở bước tiếp theo
 
 Cấu hình node Split Out kéo 2 mảng images và iframe vào 2 node tương ứng để tách xử lý từng dữ liệu trong mảng
 
