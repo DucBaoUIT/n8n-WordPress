@@ -6,7 +6,7 @@ Mô hình dưới đây sẽ hướng dẫn các bạn cách tạo workflow N8N 
 
 Mô hình tổng quan
 
-![image](https://github.com/user-attachments/assets/dad22ebc-6450-420d-a54d-4baa8eeea6db)
+![image](https://github.com/user-attachments/assets/398fbd7c-d7fc-4342-a9c8-7714500e49fd)
 
 
 Quy trình thực hiện mô hình sẽ bao gồm 6 bước chính với các node cụ thể
@@ -52,6 +52,8 @@ Node 6: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả
 Node 7 - Node 8: IF - Sử dụng node điều kiện để kiểm tra trống Images và IFrame tránh việc quét báo lỗi, nếu mảng trống thì bỏ qua, nếu mảng tồn tại thì đến bước kiểm tra 
 
 Node 9: Discord - Gửi thông báo nếu Node 2 có website lỗi 
+
+Node 10 - Node 11: Split Out - Dùng 2 node này để tách mảng ra thành từng thành phần images và iframes tránh việc xử lý quá tải ở bước tiếp theo
 
 6. Kiểm tra và thông báo 
 
@@ -135,7 +137,7 @@ Trước khi kiểm tra Images và IFrames cần phải kiểm tra xem có truy 
 
 Cấu hình node HTTP đó như sau. Lưu ý các trường sau:
 
-- Request Method: Chọn “GET” để kiểm tra Website
+- Request Method: Chọn “POST” để kiểm tra Website thay vì "GET" để tránh lỗi "Many redirects"
 
 - URL: Bạn có thể thực hiện kéo thả từ domain ở bước Split Domain vào
 
@@ -145,7 +147,7 @@ Cấu hình node HTTP đó như sau. Lưu ý các trường sau:
 
 <div align='center'>
 
-![image](https://github.com/user-attachments/assets/5a994000-28d1-4bbd-ba79-d97e065f501d)
+![image](https://github.com/user-attachments/assets/61cfc046-daac-4669-b79d-0eb07a218234)
 
 </div> 
 
@@ -241,7 +243,7 @@ return results;
 
 <div align='center'>
   
-![image](https://github.com/user-attachments/assets/f74740bc-508d-472a-bf73-efcee3a332d1)
+![image](https://github.com/user-attachments/assets/7b9c113e-09bc-4ab9-9393-115ccdc48bf6)
 
 </div>
 
@@ -261,7 +263,7 @@ Trường `{{ $json.domain }}` để lấy Domain từ node trước
 
 <div align="center">
   
-![Screenshot from 2025-06-15 20-29-34](https://github.com/user-attachments/assets/c1613f28-aa18-4f8c-a8ab-4139e53280c0)
+![image](https://github.com/user-attachments/assets/f31f1fb9-fb47-48e9-9d03-ea7f909b56a4)
 
 </div>
 
@@ -327,6 +329,16 @@ Log: {{ $json.error.code }}
 <div align="center">
 
 ![Screenshot from 2025-06-15 20-36-41](https://github.com/user-attachments/assets/32d4bc55-310c-4c21-a303-be86bea1b49e)
+
+</div>
+
+### Node 10 - Node 11: Split Out - Dùng 2 node này để tách mảng ra thành từng thành phần images và iframes tránh việc xử lý quá tải ở bước tiếp theo
+
+Cấu hình node Split Out kéo 2 mảng images và iframe vào 2 node tương ứng để tách xử lý từng dữ liệu trong mảng
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/57baf271-fb5e-4b7c-babd-e3a713c75048)
 
 </div>
 
