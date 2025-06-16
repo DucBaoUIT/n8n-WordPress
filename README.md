@@ -6,8 +6,7 @@ Mô hình dưới đây sẽ hướng dẫn các bạn cách tạo workflow N8N 
 
 Mô hình tổng quan
 
-![image](https://github.com/user-attachments/assets/398fbd7c-d7fc-4342-a9c8-7714500e49fd)
-
+![image](https://github.com/user-attachments/assets/c16440df-19c3-4672-8508-3f5713b569ce)
 
 Quy trình thực hiện mô hình sẽ bao gồm 6 bước chính với các node cụ thể
 
@@ -45,7 +44,7 @@ Node 2: HTTP Request - Gửi request về domain này để đảm bảo tính t
 
 Node 3 - Node 4: HTML - Sử dụng 2 Node này để tách và lấy toàn bộ images và iframes từ kết quả trả về của node trước. Kết quả tra về sẽ là 2 mảng có giá trị images và iframes
 
-Node 5: Node Merge - Gộp 2 mảng lại 
+Node 5: Node Code - Lọc các Data URI từ image
 
 Node 6: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả 2 mảng đều rỗng thì quay lại vòng lặp, nếu không sẽ thực hiện node tiếp theo 
 
@@ -452,7 +451,7 @@ Workflow sẽ chạy đúng quy trình tất cả các bước và đi vào ra n
 
 <div align="center">
 
-![th3](https://github.com/user-attachments/assets/4880965d-20c2-414b-9b10-478196e1bd36)
+![image](https://github.com/user-attachments/assets/3c8706a3-108e-4323-a4dc-4483abe9baea)
 
 </div>
 
@@ -470,6 +469,6 @@ Workflow khi này sẽ không chạy vào các nhánh báo lỗi nữa
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/ce713338-070d-483d-8ba3-6f6c53833cf2)
+![image](https://github.com/user-attachments/assets/86568193-f474-47c6-8fc4-ad47ce597344)
 
 <div>
