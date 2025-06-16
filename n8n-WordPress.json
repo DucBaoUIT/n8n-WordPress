@@ -38,6 +38,7 @@
     {
       "parameters": {
         "url": "={{ $json.subpage }}",
+        "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
           "fullResponse": true
@@ -48,32 +49,32 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -2560,
-        845
+        -2600,
+        840
       ]
     },
     {
       "parameters": {
-        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const xml = item.json.body || item.json.data || '';\n  \n  if (typeof xml !== 'string') {\n    continue; // hoặc throw nếu bạn muốn dừng hẳn\n  }\n\n  const urls = [...xml.matchAll(/<loc>(.*?)<\\/loc>/g)].map(match => match[1]);\n\n  for (const url of urls) {\n    results.push({\n      json: {\n        subpage: url,\n      }\n    });\n  }\n}\n\nreturn results;\n"
+        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const xml = item.json.body || item.json.data || '';\n  \n  if (typeof xml !== 'string') {\n    continue; // hoặc throw nếu bạn muốn dừng hẳn\n  }\n\n  const urls = [...xml.matchAll(/<loc>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?<\\/loc>/g)].map(match => match[1]);\n\n  for (const url of urls) {\n    results.push({\n      json: {\n        subpage: url,\n      }\n    });\n  }\n}\n\nreturn results;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         -2780,
-        845
+        840
       ],
       "id": "393f74e0-ba49-4616-a3c1-497481774e8b",
       "name": "Extract to SubSitemap"
     },
     {
       "parameters": {
-        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const xml = item.json.body || item.json.data || '';\n\n  if (typeof xml !== 'string') {\n    throw new Error('Sitemap XML is not a valid string');\n  }\n\n  const matches = [...xml.matchAll(/<loc>(.*?)<\\/loc>/g)];\n  const urls = matches.map(match => match[1]);\n\n  for (const domain of urls) {\n    results.push({ json: { domain } });\n  }\n}\n\nreturn results;\n"
+        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const xml = item.json.body || item.json.data || '';\n\n  if (typeof xml !== 'string') {\n    throw new Error('Sitemap XML is not a valid string');\n  }\n\n  const matches = [...xml.matchAll(/<loc>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?<\\/loc>/g)];\n  const urls = matches.map(match => match[1]);\n\n  for (const domain of urls) {\n    results.push({ json: { domain } });\n  }\n}\n\nreturn results;\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2340,
-        845
+        -2420,
+        840
       ],
       "id": "6a247785-c9f5-4736-98e8-0482467a5968",
       "name": "All URL"
@@ -152,73 +153,10 @@
       "name": "Sub Domain Loop ",
       "typeVersion": 1,
       "position": [
-        -380,
-        1180
+        -420,
+        1160
       ],
       "id": "02a7c4fb-a70b-46dd-9949-27480ffcae59"
-    },
-    {
-      "parameters": {
-        "operation": "extractHtmlContent",
-        "extractionValues": {
-          "values": [
-            {
-              "key": "image",
-              "cssSelector": "img",
-              "returnValue": "attribute",
-              "attribute": "src",
-              "returnArray": true
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.html",
-      "typeVersion": 1.2,
-      "position": [
-        -1760,
-        540
-      ],
-      "id": "3e9d9d9f-44bd-48a3-b773-d54f1c61e34b",
-      "name": "Extract Image"
-    },
-    {
-      "parameters": {
-        "operation": "extractHtmlContent",
-        "extractionValues": {
-          "values": [
-            {
-              "key": "iframe",
-              "cssSelector": "iframe",
-              "returnValue": "attribute",
-              "attribute": "src",
-              "returnArray": true
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.html",
-      "typeVersion": 1.2,
-      "position": [
-        -1760,
-        780
-      ],
-      "id": "9afce9ad-fe76-4dc3-bf3f-be066a05441e",
-      "name": "Extract IFrame"
-    },
-    {
-      "parameters": {
-        "mode": "combineBySql"
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.1,
-      "position": [
-        -1540,
-        640
-      ],
-      "id": "b0aa8056-cf0f-415a-88b0-1b90c3288645",
-      "name": "Merge"
     },
     {
       "parameters": {
@@ -237,8 +175,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -2020,
-        660
+        -2080,
+        680
       ],
       "id": "375fcc54-aba6-4d4e-bb24-85d7fdc9252a",
       "onError": "continueErrorOutput"
@@ -259,8 +197,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -840,
-        420
+        -880,
+        540
       ],
       "id": "fd833c91-5cef-45cd-bfe3-fb8aeb508bb5",
       "onError": "continueRegularOutput"
@@ -281,8 +219,8 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -480,
-        400
+        -540,
+        540
       ],
       "id": "b5927075-7848-4ef6-89fc-9454d3dbe3ad",
       "name": "Log Images, IFrame",
@@ -312,14 +250,14 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        -660,
-        420
+        -720,
+        660
       ],
       "id": "88f29fca-6f9f-4a7c-8532-6ba736278e6f"
     },
     {
       "parameters": {
-        "url": "={{ $('Extract IFrame').item.json.iframe }}",
+        "url": "={{ $json.iframe }}",
         "responseFormat": "string",
         "options": {
           "fullResponse": true,
@@ -330,8 +268,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -840,
-        620
+        -900,
+        780
       ],
       "id": "ed89443b-a0af-4532-bd4d-bf161ee6eaac",
       "onError": "continueRegularOutput"
@@ -423,16 +361,16 @@
     },
     {
       "parameters": {
-        "content": "# 5. Extract Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Merge into one \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Check images and iframes",
-        "height": 840,
-        "width": 1280,
+        "content": "# 5. Extract Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Split Images and IFrames -> Check images and iframes",
+        "height": 680,
+        "width": 1340,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2200,
-        160
+        -2300,
+        280
       ],
       "id": "a6aa12fb-eb38-4621-8e3c-f6486b5793d9",
       "name": "Sticky Note4"
@@ -440,15 +378,15 @@
     {
       "parameters": {
         "content": "# 6. Notifications \n\n## - After Check by HTTP Request. If there is no error from both Images and IFrame - go to \"true\" branches to run the next domain.\n\n## - If there is an error -> Notify to Discord Channel Images IFrame.\n",
-        "height": 720,
-        "width": 620,
+        "height": 740,
+        "width": 600,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -920,
-        20
+        -960,
+        220
       ],
       "id": "d0bacd66-1ac4-4437-b614-a0aed5ff2810",
       "name": "Sticky Note5"
@@ -457,7 +395,7 @@
       "parameters": {
         "content": "# 4. Get sub url\n\n## - Parse code to extract all subsitemap\n\n## - Get all URL by HTTP Request \n\n## - Parse Code again to take URL only",
         "height": 500,
-        "width": 640,
+        "width": 540,
         "color": 6
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -521,8 +459,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -2160,
-        860
+        -2240,
+        840
       ],
       "id": "d3b72b6c-f8c8-42cf-85fa-8d4d68940996",
       "name": "Loop Over Items"
@@ -565,11 +503,52 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1340,
-        640
+        -1520,
+        660
       ],
       "id": "30ebd821-7748-4771-b129-9c5377458482",
       "name": "Empty Array1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "image",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1080,
+        540
+      ],
+      "id": "22b04d2d-6eb8-440c-a546-2c18d5cc0e7b",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "iframe",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -1080,
+        780
+      ],
+      "id": "e2c6128f-5c54-4024-b578-c03b42a65f16",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const images = item.json.image || [];\n\n  const filtered = images\n    .filter(src => typeof src === 'string' && !src.startsWith('data:')) // loại bỏ base64\n    .map(src => {\n      if (src.startsWith('//')) {\n        return 'https:' + src;\n      }\n      if (!src.startsWith('http')) {\n        return 'https://' + src;\n      }\n      return src;\n    });\n\n  return {\n    json: {\n      ...item.json,\n      image: filtered,\n    },\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1700,
+        660
+      ],
+      "id": "ceb378eb-b5f7-4ec5-ac33-70efc67e3328",
+      "name": "Code"
     },
     {
       "parameters": {
@@ -599,11 +578,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1180,
-        500
+        -1300,
+        560
       ],
       "id": "d99f917a-49f3-4a63-b4d2-7014470794fd",
-      "name": "If"
+      "name": "Empty Images"
     },
     {
       "parameters": {
@@ -633,39 +612,43 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1180,
+        -1300,
         800
       ],
       "id": "693b4a60-25b8-4925-850f-37f1347ac969",
-      "name": "If1"
+      "name": "empty Iframe"
     },
     {
       "parameters": {
-        "fieldToSplitOut": "image",
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "image",
+              "cssSelector": "img",
+              "returnValue": "attribute",
+              "attribute": "src",
+              "returnArray": true
+            },
+            {
+              "key": "iframe",
+              "cssSelector": "iframe",
+              "returnValue": "attribute",
+              "attribute": "src",
+              "returnArray": true
+            }
+          ]
+        },
         "options": {}
       },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
       "position": [
-        -1020,
-        420
+        -1880,
+        660
       ],
-      "id": "22b04d2d-6eb8-440c-a546-2c18d5cc0e7b",
-      "name": "Split Out"
-    },
-    {
-      "parameters": {
-        "fieldToSplitOut": "iframe",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
-      "position": [
-        -1020,
-        620
-      ],
-      "id": "e2c6128f-5c54-4024-b578-c03b42a65f16",
-      "name": "Split Out1"
+      "id": "59f3fbab-046e-4ad1-83fd-945253033dfc",
+      "name": "Extract "
     }
   ],
   "pinData": {},
@@ -772,49 +755,11 @@
         ]
       ]
     },
-    "Extract Image": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract IFrame": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Empty Array1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Fetch Sub Domain": {
       "main": [
         [
           {
-            "node": "Extract Image",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Extract IFrame",
+            "node": "Extract ",
             "type": "main",
             "index": 0
           }
@@ -935,34 +880,12 @@
         ],
         [
           {
-            "node": "If1",
+            "node": "empty Iframe",
             "type": "main",
             "index": 0
           },
           {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Split Out",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If1": {
-      "main": [
-        [
-          {
-            "node": "Split Out1",
+            "node": "Empty Images",
             "type": "main",
             "index": 0
           }
@@ -990,13 +913,57 @@
           }
         ]
       ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Empty Array1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Empty Images": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "empty Iframe": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract ": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "e0cc3f04-7553-401b-a5a0-ccd9dba57a03",
+  "versionId": "f291b657-1498-4ecd-a16a-13aece370174",
   "meta": {
     "instanceId": "67d647721e03059cdf108441440a2d41ef4810359836c5d00eac2393b27716f0"
   },
