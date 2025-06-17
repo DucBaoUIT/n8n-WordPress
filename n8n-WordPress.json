@@ -12,13 +12,13 @@
           "followRedirect": false
         }
       },
-      "id": "f93fc12d-96b9-42bb-8037-3cd5ce8fe610",
+      "id": "a6e2366e-32c4-415f-98db-3ea507dc6110",
       "name": "Get Sitemap XML",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -2980,
-        960
+        -2480,
+        840
       ],
       "onError": "continueErrorOutput"
     },
@@ -29,10 +29,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3460,
-        980
+        -2960,
+        860
       ],
-      "id": "09a210af-0e09-4b9e-b8d9-b273223ec373",
+      "id": "9a03de39-6a43-478c-a525-dbdcb32b337e",
       "name": "Extract Main Domains"
     },
     {
@@ -44,13 +44,13 @@
           "fullResponse": true
         }
       },
-      "id": "dc789b77-3e1b-4449-8d33-bdec43dba1a5",
+      "id": "11bb53aa-ac5e-4333-8f18-23413484fa30",
       "name": "Get SubSitemap XML",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -2600,
-        840
+        -2100,
+        720
       ]
     },
     {
@@ -60,10 +60,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2780,
-        840
+        -2280,
+        720
       ],
-      "id": "393f74e0-ba49-4616-a3c1-497481774e8b",
+      "id": "015bb1a9-01e2-4650-83d3-dd9e385b143f",
       "name": "Extract to SubSitemap"
     },
     {
@@ -73,10 +73,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2420,
-        840
+        -1920,
+        720
       ],
-      "id": "6a247785-c9f5-4736-98e8-0482467a5968",
+      "id": "144828fe-00c4-4de4-b46a-a523ff7930bb",
       "name": "All URL"
     },
     {
@@ -88,16 +88,16 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -2560,
-        1170
+        -2060,
+        1060
       ],
-      "id": "4dbb2aa7-39b5-49ac-a0e0-3788f5a3e4e0",
+      "id": "46ed24bd-0199-4522-9741-2162eb20e101",
       "name": "Log Status",
       "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
       "credentials": {
         "discordWebhookApi": {
-          "id": "zvzNGUOWjVLOpUv7",
-          "name": "Discord Webhook Web Status"
+          "id": "WSqD4iJuyH2E5vDB",
+          "name": "Discord Webhook account"
         }
       }
     },
@@ -116,10 +116,10 @@
       "type": "n8n-nodes-base.cron",
       "typeVersion": 1,
       "position": [
-        -3880,
-        970
+        -3380,
+        860
       ],
-      "id": "371d6eea-f710-40d5-980c-f242e82aa2f1"
+      "id": "e0e5abfa-4fb8-4647-a4b2-522094fa6e94"
     },
     {
       "parameters": {
@@ -139,10 +139,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -3220,
-        980
+        -2720,
+        860
       ],
-      "id": "df20962c-0dad-488d-90dc-b5a70f91dad4",
+      "id": "6d3e605b-cebe-43e9-95ca-a3900699096a",
       "retryOnFail": true,
       "alwaysOutputData": false,
       "onError": "continueErrorOutput"
@@ -153,10 +153,10 @@
       "name": "Sub Domain Loop ",
       "typeVersion": 1,
       "position": [
-        -420,
-        1160
+        -60,
+        1020
       ],
-      "id": "02a7c4fb-a70b-46dd-9949-27480ffcae59"
+      "id": "2ede217f-1abc-4a18-af45-ebce8ff62fc6"
     },
     {
       "parameters": {
@@ -175,14 +175,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -2080,
-        680
+        -1580,
+        560
       ],
-      "id": "375fcc54-aba6-4d4e-bb24-85d7fdc9252a",
+      "id": "79d9dca0-24d2-4c59-a352-2e3a6e21f50e",
       "onError": "continueErrorOutput"
     },
     {
       "parameters": {
+        "requestMethod": "HEAD",
         "url": "={{ $json.image }}",
         "allowUnauthorizedCerts": true,
         "responseFormat": "string",
@@ -197,11 +198,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -880,
-        540
+        -520,
+        440
       ],
-      "id": "fd833c91-5cef-45cd-bfe3-fb8aeb508bb5",
-      "onError": "continueRegularOutput"
+      "id": "5e9c5884-037e-4ea5-be36-685d3b8c1ba8",
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -219,45 +220,26 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -540,
-        540
+        -240,
+        460
       ],
-      "id": "b5927075-7848-4ef6-89fc-9454d3dbe3ad",
+      "id": "fa90e052-5be6-40a7-b7e2-1048d42cec47",
       "name": "Log Images, IFrame",
       "webhookId": "e5912c40-c879-43c5-b221-82754de90ae6",
       "executeOnce": true,
       "alwaysOutputData": false,
       "credentials": {
         "discordWebhookApi": {
-          "id": "plVqcriWIgaVQOTN",
+          "id": "8Agy0Ie6FvTHqZiG",
           "name": "Discord Webhook Images IFrames"
         }
       }
     },
     {
       "parameters": {
-        "conditions": {
-          "number": [
-            {
-              "value1": "={{ $json.statusCode }}",
-              "operation": "notEqual",
-              "value2": 200
-            }
-          ]
-        }
-      },
-      "name": "Check Error",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        -720,
-        660
-      ],
-      "id": "88f29fca-6f9f-4a7c-8532-6ba736278e6f"
-    },
-    {
-      "parameters": {
+        "requestMethod": "HEAD",
         "url": "={{ $json.iframe }}",
+        "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
           "fullResponse": true,
@@ -268,11 +250,11 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -900,
-        780
+        -520,
+        660
       ],
-      "id": "ed89443b-a0af-4532-bd4d-bf161ee6eaac",
-      "onError": "continueRegularOutput"
+      "id": "c24d1c7b-b18f-4610-be4d-90e0ac9eb712",
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -283,16 +265,16 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -1160,
-        1000
+        -1240,
+        880
       ],
-      "id": "c7391e63-c76f-4b03-82a4-87beaf78cc3c",
+      "id": "288eb912-d206-48f5-b7e0-0eee3b9edac5",
       "name": "Log Status SubDomain",
       "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
       "credentials": {
         "discordWebhookApi": {
-          "id": "zvzNGUOWjVLOpUv7",
-          "name": "Discord Webhook Web Status"
+          "id": "WSqD4iJuyH2E5vDB",
+          "name": "Discord Webhook account"
         }
       }
     },
@@ -306,10 +288,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2780,
-        980
+        -2280,
+        860
       ],
-      "id": "9b4f3953-5b91-4c77-b295-dee9b8845135",
+      "id": "983c3b62-29d0-46e4-aeb0-dc2e3ee91825",
       "name": "Sticky Note6"
     },
     {
@@ -322,10 +304,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -3300,
-        550
+        -2800,
+        440
       ],
-      "id": "5f5ac032-cd11-4d55-9554-f5373d86b5db",
+      "id": "10260342-25e1-4287-9a00-2e113a1d649d",
       "name": "Sticky Note"
     },
     {
@@ -337,10 +319,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -3960,
-        770
+        -3460,
+        660
       ],
-      "id": "d872ad86-70fe-4e7e-b5f8-27e5bf41efda",
+      "id": "1126a4d3-93ac-44ba-97e9-d406e26b8750",
       "name": "Sticky Note1"
     },
     {
@@ -353,26 +335,26 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -3710,
-        630
+        -3220,
+        520
       ],
-      "id": "2285adae-c13c-42ad-8433-61708e4bbd34",
+      "id": "2dcec607-b707-4384-afa5-d1a4ac29d021",
       "name": "Sticky Note3"
     },
     {
       "parameters": {
         "content": "# 5. Extract Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Split Images and IFrames -> Check images and iframes",
         "height": 680,
-        "width": 1340,
+        "width": 1220,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2300,
-        280
+        -1780,
+        160
       ],
-      "id": "a6aa12fb-eb38-4621-8e3c-f6486b5793d9",
+      "id": "a9626efa-61bd-4c11-ae3e-bce1979a1c9f",
       "name": "Sticky Note4"
     },
     {
@@ -385,10 +367,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -960,
-        220
+        -560,
+        100
       ],
-      "id": "d0bacd66-1ac4-4437-b614-a0aed5ff2810",
+      "id": "1687f3d5-a92c-4959-b92d-34c652c0c8de",
       "name": "Sticky Note5"
     },
     {
@@ -401,10 +383,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2840,
-        500
+        -2340,
+        380
       ],
-      "id": "71fb594c-c583-4e03-9c57-d79605d5ee91",
+      "id": "4cd342d1-c0bd-44b9-baf5-b7838a8ccea9",
       "name": "Sticky Note2"
     },
     {
@@ -417,10 +399,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -600,
-        960
+        -100,
+        840
       ],
-      "id": "9c91e1dc-5f03-437a-b193-57dfd2d61efe",
+      "id": "48e1666e-d4de-4db0-b003-ac769055c975",
       "name": "Sticky Note7"
     },
     {
@@ -440,14 +422,14 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -3660,
-        970
+        -3160,
+        860
       ],
-      "id": "8bd902a2-265d-47a8-b3c6-0553bdb2178e",
+      "id": "796c1fb7-987e-4aa9-9ac9-e971ba824a2d",
       "name": "List Domains1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "8RoPX4s8CW9ajkwn",
+          "id": "oGKkaEMRRIgw0r0A",
           "name": "Google Sheets account"
         }
       }
@@ -459,10 +441,10 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -2240,
-        840
+        -1740,
+        720
       ],
-      "id": "d3b72b6c-f8c8-42cf-85fa-8d4d68940996",
+      "id": "300d3d84-393a-459c-b015-2fcb30b1766e",
       "name": "Loop Over Items"
     },
     {
@@ -503,10 +485,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1520,
-        660
+        -1020,
+        540
       ],
-      "id": "30ebd821-7748-4771-b129-9c5377458482",
+      "id": "05d26bb2-cd49-4ed7-943a-b6cae54f90c3",
       "name": "Empty Array1"
     },
     {
@@ -517,10 +499,10 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        -1080,
-        540
+        -780,
+        440
       ],
-      "id": "22b04d2d-6eb8-440c-a546-2c18d5cc0e7b",
+      "id": "5ef53665-eb1d-4310-ac80-d01d0acf8065",
       "name": "Split Out"
     },
     {
@@ -531,10 +513,10 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        -1080,
-        780
+        -780,
+        660
       ],
-      "id": "e2c6128f-5c54-4024-b578-c03b42a65f16",
+      "id": "afb5419e-2875-4ab5-aad6-47d51395fd95",
       "name": "Split Out1"
     },
     {
@@ -544,79 +526,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1700,
-        660
+        -1200,
+        540
       ],
-      "id": "ceb378eb-b5f7-4ec5-ac33-70efc67e3328",
+      "id": "5e57ac4b-450d-4cdf-8572-20a20d5c4e4e",
       "name": "Code"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "612c8a8d-f77a-4d21-a474-b785140179d9",
-              "leftValue": "={{ $json.image }}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -1300,
-        560
-      ],
-      "id": "d99f917a-49f3-4a63-b4d2-7014470794fd",
-      "name": "Empty Images"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "612c8a8d-f77a-4d21-a474-b785140179d9",
-              "leftValue": "={{ $json.iframe }}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -1300,
-        800
-      ],
-      "id": "693b4a60-25b8-4925-850f-37f1347ac969",
-      "name": "empty Iframe"
     },
     {
       "parameters": {
@@ -644,10 +558,10 @@
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
       "position": [
-        -1880,
-        660
+        -1380,
+        540
       ],
-      "id": "59f3fbab-046e-4ad1-83fd-945253033dfc",
+      "id": "909f4670-f317-4875-833a-20fff1165e22",
       "name": "Extract "
     }
   ],
@@ -777,7 +691,14 @@
       "main": [
         [
           {
-            "node": "Check Error",
+            "node": "Sub Domain Loop ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Images, IFrame",
             "type": "main",
             "index": 0
           }
@@ -795,29 +716,18 @@
         ]
       ]
     },
-    "Check Error": {
+    "Check IFRAMES": {
       "main": [
-        [
-          {
-            "node": "Log Images, IFrame",
-            "type": "main",
-            "index": 0
-          }
-        ],
         [
           {
             "node": "Sub Domain Loop ",
             "type": "main",
             "index": 0
           }
-        ]
-      ]
-    },
-    "Check IFRAMES": {
-      "main": [
+        ],
         [
           {
-            "node": "Check Error",
+            "node": "Log Images, IFrame",
             "type": "main",
             "index": 0
           }
@@ -826,13 +736,7 @@
     },
     "Log Status SubDomain": {
       "main": [
-        [
-          {
-            "node": "Sub Domain Loop ",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "List Domains1": {
@@ -880,12 +784,12 @@
         ],
         [
           {
-            "node": "empty Iframe",
+            "node": "Split Out",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Empty Images",
+            "node": "Split Out1",
             "type": "main",
             "index": 0
           }
@@ -925,28 +829,6 @@
         ]
       ]
     },
-    "Empty Images": {
-      "main": [
-        [
-          {
-            "node": "Split Out",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "empty Iframe": {
-      "main": [
-        [
-          {
-            "node": "Split Out1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Extract ": {
       "main": [
         [
@@ -963,10 +845,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "f291b657-1498-4ecd-a16a-13aece370174",
+  "versionId": "6c09003f-4190-4c27-9d15-add9158100ce",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "67d647721e03059cdf108441440a2d41ef4810359836c5d00eac2393b27716f0"
   },
-  "id": "4BDtW2Qc2RnpsL6V",
+  "id": "q9qCuXIBHYGcJFUh",
   "tags": []
 }
