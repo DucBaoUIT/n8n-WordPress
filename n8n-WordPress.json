@@ -89,7 +89,7 @@
       "typeVersion": 2,
       "position": [
         -2060,
-        1060
+        960
       ],
       "id": "46ed24bd-0199-4522-9741-2162eb20e101",
       "name": "Log Status",
@@ -153,8 +153,8 @@
       "name": "Sub Domain Loop ",
       "typeVersion": 1,
       "position": [
-        -60,
-        1020
+        120,
+        960
       ],
       "id": "2ede217f-1abc-4a18-af45-ebce8ff62fc6"
     },
@@ -198,7 +198,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -520,
+        -580,
         440
       ],
       "id": "5e9c5884-037e-4ea5-be36-685d3b8c1ba8",
@@ -207,7 +207,7 @@
     {
       "parameters": {
         "authentication": "webhook",
-        "content": "=\n🚨 Domain Error on Images IFrames Report\n\n{{ $('Loop Over Items').item.json.domain }}\n❌ Error Code: {{ $('Check Error').item.json.error.code }}\n❌ Error Status: {{ $('Check Error').item.json.error.status }}\n📍 Destination: {{ $json.error.input }}\n!!!!!",
+        "content": "={{ $json.content }}\n!!!!!!!",
         "options": {
           "wait": false
         },
@@ -220,8 +220,8 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -240,
-        460
+        0,
+        380
       ],
       "id": "fa90e052-5be6-40a7-b7e2-1048d42cec47",
       "name": "Log Images, IFrame",
@@ -250,7 +250,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -520,
+        -620,
         660
       ],
       "id": "c24d1c7b-b18f-4610-be4d-90e0ac9eb712",
@@ -281,15 +281,15 @@
     {
       "parameters": {
         "content": "# Additional \n\n## - This is notification for web status and XML Site",
-        "height": 360,
+        "height": 200,
         "width": 440,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2280,
-        860
+        -2340,
+        1000
       ],
       "id": "983c3b62-29d0-46e4-aeb0-dc2e3ee91825",
       "name": "Sticky Note6"
@@ -345,7 +345,7 @@
       "parameters": {
         "content": "# 5. Extract Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Split Images and IFrames -> Check images and iframes",
         "height": 680,
-        "width": 1220,
+        "width": 1140,
         "color": 4
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -361,13 +361,13 @@
       "parameters": {
         "content": "# 6. Notifications \n\n## - After Check by HTTP Request. If there is no error from both Images and IFrame - go to \"true\" branches to run the next domain.\n\n## - If there is an error -> Notify to Discord Channel Images IFrame.\n",
         "height": 740,
-        "width": 600,
+        "width": 660,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -560,
+        -620,
         100
       ],
       "id": "1687f3d5-a92c-4959-b92d-34c652c0c8de",
@@ -563,6 +563,32 @@
       ],
       "id": "909f4670-f317-4875-833a-20fff1165e22",
       "name": "Extract "
+    },
+    {
+      "parameters": {
+        "mode": "combineBySql"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        -400,
+        560
+      ],
+      "id": "def2ac38-aef4-4ca3-b268-68d69798558e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "const domain = $('Loop Over Items').item.json.domain || 'Unknown';\nconst seen = new Set();\nconst results = [];\n\nfor (const item of items) {\n  const error = item.json.error;\n  const image = item.json.image;\n  const iframe = item.json.iframe;\n\n  if (!error) continue;\n\n  const urls = [];\n\n  // Đảm bảo đưa cả image và iframe vào nếu có\n  if (Array.isArray(image)) urls.push(...image);\n  else if (image) urls.push(image);\n\n  if (Array.isArray(iframe)) urls.push(...iframe);\n  else if (iframe) urls.push(iframe);\n\n  for (const url of urls) {\n    if (!url || seen.has(url)) continue;\n    seen.add(url);\n\n    const code = error.code || 'Unknown';\n    const status = error.status || 'Unknown';\n\n    results.push(`❌ Error\\n🔗 URL: ${url}\\n💥 Code: ${code}\\n📶 Status: ${status}`);\n  }\n}\n\nreturn [{\n  json: {\n    content: results.length > 0\n      ? `🚨 Error Report for: ${domain}\\n\\n${results.join('\\n\\n')}`\n      : '',\n  },\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        380
+      ],
+      "id": "063b8422-7498-40f1-8a9d-2592d4c0b467",
+      "name": "Code1"
     }
   ],
   "pinData": {},
@@ -698,7 +724,7 @@
         ],
         [
           {
-            "node": "Log Images, IFrame",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -727,9 +753,9 @@
         ],
         [
           {
-            "node": "Log Images, IFrame",
+            "node": "Merge",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -839,13 +865,35 @@
           }
         ]
       ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Log Images, IFrame",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "6c09003f-4190-4c27-9d15-add9158100ce",
+  "versionId": "eabf560b-4ddb-46f7-bdff-9e409af772f9",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "67d647721e03059cdf108441440a2d41ef4810359836c5d00eac2393b27716f0"
