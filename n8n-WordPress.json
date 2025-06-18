@@ -1,5 +1,5 @@
 {
-  "name": "WP-n8n",
+  "name": "My workflow",
   "nodes": [
     {
       "parameters": {
@@ -12,13 +12,13 @@
           "followRedirect": false
         }
       },
-      "id": "a6e2366e-32c4-415f-98db-3ea507dc6110",
+      "id": "bc48e7cf-bcf5-484a-abb7-5ac0a32b9a03",
       "name": "Get Sitemap XML",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -2480,
-        840
+        -2100,
+        740
       ],
       "onError": "continueErrorOutput"
     },
@@ -29,10 +29,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2960,
-        860
+        -2580,
+        760
       ],
-      "id": "9a03de39-6a43-478c-a525-dbdcb32b337e",
+      "id": "51f2d4a1-e7b5-40c9-ad7b-3e11b1f89866",
       "name": "Extract Main Domains"
     },
     {
@@ -44,13 +44,13 @@
           "fullResponse": true
         }
       },
-      "id": "11bb53aa-ac5e-4333-8f18-23413484fa30",
+      "id": "209e4d68-6cdf-4fcd-9630-c6c0ce99a27a",
       "name": "Get SubSitemap XML",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -2100,
-        720
+        -1720,
+        620
       ]
     },
     {
@@ -60,10 +60,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2280,
-        720
+        -1900,
+        620
       ],
-      "id": "015bb1a9-01e2-4650-83d3-dd9e385b143f",
+      "id": "45831038-4a3c-409b-b0ab-ae5d7c5bfb8f",
       "name": "Extract to SubSitemap"
     },
     {
@@ -73,10 +73,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1920,
-        720
+        -1540,
+        620
       ],
-      "id": "144828fe-00c4-4de4-b46a-a523ff7930bb",
+      "id": "f848e77c-22d2-4b43-ae6f-11e84203f686",
       "name": "All URL"
     },
     {
@@ -88,15 +88,15 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -2060,
-        960
+        -1680,
+        860
       ],
-      "id": "46ed24bd-0199-4522-9741-2162eb20e101",
+      "id": "7863b2ed-b3b9-4b69-a648-cfe16044674c",
       "name": "Log Status",
       "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
       "credentials": {
         "discordWebhookApi": {
-          "id": "WSqD4iJuyH2E5vDB",
+          "id": "ijERmmgaOVpveUgv",
           "name": "Discord Webhook account"
         }
       }
@@ -107,7 +107,7 @@
           "item": [
             {
               "mode": "everyX",
-              "value": 6
+              "value": 3
             }
           ]
         }
@@ -116,10 +116,10 @@
       "type": "n8n-nodes-base.cron",
       "typeVersion": 1,
       "position": [
-        -3380,
-        860
+        -3000,
+        760
       ],
-      "id": "e0e5abfa-4fb8-4647-a4b2-522094fa6e94"
+      "id": "3dbdb7e7-0f7a-4380-b2aa-930fe3c1da95"
     },
     {
       "parameters": {
@@ -139,10 +139,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -2720,
-        860
+        -2340,
+        760
       ],
-      "id": "6d3e605b-cebe-43e9-95ca-a3900699096a",
+      "id": "e020cbeb-116b-46d2-93d4-1efd6c9009fc",
       "retryOnFail": true,
       "alwaysOutputData": false,
       "onError": "continueErrorOutput"
@@ -153,10 +153,10 @@
       "name": "Sub Domain Loop ",
       "typeVersion": 1,
       "position": [
-        120,
-        960
+        500,
+        860
       ],
-      "id": "2ede217f-1abc-4a18-af45-ebce8ff62fc6"
+      "id": "d1e4fc9f-de36-4855-a1f2-047b44620556"
     },
     {
       "parameters": {
@@ -175,10 +175,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -1580,
-        560
+        -1160,
+        460
       ],
-      "id": "79d9dca0-24d2-4c59-a352-2e3a6e21f50e",
+      "id": "5d10b939-a871-4346-8c39-477bd784e40c",
       "onError": "continueErrorOutput"
     },
     {
@@ -198,40 +198,35 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -580,
-        440
+        -220,
+        340
       ],
-      "id": "5e9c5884-037e-4ea5-be36-685d3b8c1ba8",
+      "id": "99b323e4-f0ba-4d65-aeb2-50d4188e2772",
       "onError": "continueErrorOutput"
     },
     {
       "parameters": {
         "authentication": "webhook",
-        "content": "={{ $json.content }}\n!!!!!!!",
+        "content": "={{ $json.content }}\n--------------------------------------------------------",
         "options": {
           "wait": false
-        },
-        "embeds": {
-          "values": [
-            {}
-          ]
         }
       },
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        0,
-        380
+        380,
+        280
       ],
-      "id": "fa90e052-5be6-40a7-b7e2-1048d42cec47",
+      "id": "c5fdc667-88b7-4360-9063-ca826ee7a1cf",
       "name": "Log Images, IFrame",
       "webhookId": "e5912c40-c879-43c5-b221-82754de90ae6",
       "executeOnce": true,
       "alwaysOutputData": false,
       "credentials": {
         "discordWebhookApi": {
-          "id": "8Agy0Ie6FvTHqZiG",
-          "name": "Discord Webhook Images IFrames"
+          "id": "ocy9BCF6vbNvMPr5",
+          "name": "Discord Webhook Images IFrames "
         }
       }
     },
@@ -250,10 +245,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -620,
-        660
+        -240,
+        560
       ],
-      "id": "c24d1c7b-b18f-4610-be4d-90e0ac9eb712",
+      "id": "f4ef9916-eb45-4ca3-b50b-a2babd313eaa",
       "onError": "continueErrorOutput"
     },
     {
@@ -265,18 +260,12 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -1240,
-        880
+        -860,
+        780
       ],
-      "id": "288eb912-d206-48f5-b7e0-0eee3b9edac5",
+      "id": "a0df5883-96ca-4f8d-b8d5-210efd7f1770",
       "name": "Log Status SubDomain",
-      "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
-      "credentials": {
-        "discordWebhookApi": {
-          "id": "WSqD4iJuyH2E5vDB",
-          "name": "Discord Webhook account"
-        }
-      }
+      "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22"
     },
     {
       "parameters": {
@@ -288,10 +277,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2340,
-        1000
+        -1960,
+        900
       ],
-      "id": "983c3b62-29d0-46e4-aeb0-dc2e3ee91825",
+      "id": "9712fc0b-b1ae-44aa-abc4-54071994df58",
       "name": "Sticky Note6"
     },
     {
@@ -304,10 +293,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2800,
-        440
+        -2420,
+        340
       ],
-      "id": "10260342-25e1-4287-9a00-2e113a1d649d",
+      "id": "39349af2-26b3-4b44-9592-01e5c6252b8c",
       "name": "Sticky Note"
     },
     {
@@ -319,10 +308,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -3460,
-        660
+        -3080,
+        560
       ],
-      "id": "1126a4d3-93ac-44ba-97e9-d406e26b8750",
+      "id": "d6662aa0-d60e-47d8-a78e-3312a9ce359a",
       "name": "Sticky Note1"
     },
     {
@@ -335,10 +324,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -3220,
-        520
+        -2840,
+        420
       ],
-      "id": "2dcec607-b707-4384-afa5-d1a4ac29d021",
+      "id": "585b2704-79d3-4d4f-b80e-0a4f8462323d",
       "name": "Sticky Note3"
     },
     {
@@ -351,10 +340,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1780,
-        160
+        -1400,
+        60
       ],
-      "id": "a9626efa-61bd-4c11-ae3e-bce1979a1c9f",
+      "id": "4d56309e-1ad8-4c3b-b4b1-6fc6f9849e00",
       "name": "Sticky Note4"
     },
     {
@@ -367,10 +356,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -620,
-        100
+        -240,
+        0
       ],
-      "id": "1687f3d5-a92c-4959-b92d-34c652c0c8de",
+      "id": "4792d952-8728-4ad7-8263-67d7f602e224",
       "name": "Sticky Note5"
     },
     {
@@ -383,10 +372,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -2340,
-        380
+        -1960,
+        280
       ],
-      "id": "4cd342d1-c0bd-44b9-baf5-b7838a8ccea9",
+      "id": "74edac09-4654-4643-8d78-279dccf43341",
       "name": "Sticky Note2"
     },
     {
@@ -399,10 +388,10 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -100,
-        840
+        280,
+        740
       ],
-      "id": "48e1666e-d4de-4db0-b003-ac769055c975",
+      "id": "81a72cac-7b34-4c0f-b9e3-d0d4273d8dfd",
       "name": "Sticky Note7"
     },
     {
@@ -422,29 +411,30 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        -3160,
-        860
+        -2780,
+        760
       ],
-      "id": "796c1fb7-987e-4aa9-9ac9-e971ba824a2d",
+      "id": "b79bd97d-201a-48ca-a991-2ece7204a327",
       "name": "List Domains1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "oGKkaEMRRIgw0r0A",
+          "id": "999rVWVTeL3MAbrk",
           "name": "Google Sheets account"
         }
       }
     },
     {
       "parameters": {
+        "batchSize": 50,
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -1740,
-        720
+        -1360,
+        620
       ],
-      "id": "300d3d84-393a-459c-b015-2fcb30b1766e",
+      "id": "23f5c0a7-a0a1-442f-9ba5-52b6dee4eaab",
       "name": "Loop Over Items"
     },
     {
@@ -485,10 +475,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1020,
-        540
+        -600,
+        440
       ],
-      "id": "05d26bb2-cd49-4ed7-943a-b6cae54f90c3",
+      "id": "13a435e6-e705-495c-a963-c2d23651f9d8",
       "name": "Empty Array1"
     },
     {
@@ -499,10 +489,10 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        -780,
-        440
+        -400,
+        340
       ],
-      "id": "5ef53665-eb1d-4310-ac80-d01d0acf8065",
+      "id": "0a02f710-4440-4219-9b2c-ab5b933f70aa",
       "name": "Split Out"
     },
     {
@@ -513,10 +503,10 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        -780,
-        660
+        -400,
+        560
       ],
-      "id": "afb5419e-2875-4ab5-aad6-47d51395fd95",
+      "id": "a394af02-fb34-4448-a04c-ea461de3bb86",
       "name": "Split Out1"
     },
     {
@@ -526,10 +516,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1200,
-        540
+        -760,
+        440
       ],
-      "id": "5e57ac4b-450d-4cdf-8572-20a20d5c4e4e",
+      "id": "80b4cbe6-621a-4f8d-9432-80dd12521032",
       "name": "Code"
     },
     {
@@ -558,23 +548,21 @@
       "type": "n8n-nodes-base.html",
       "typeVersion": 1.2,
       "position": [
-        -1380,
-        540
+        -920,
+        440
       ],
-      "id": "909f4670-f317-4875-833a-20fff1165e22",
+      "id": "51114416-da28-489e-8f4b-c5d2735ae768",
       "name": "Extract "
     },
     {
-      "parameters": {
-        "mode": "combineBySql"
-      },
+      "parameters": {},
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.1,
       "position": [
-        -400,
-        560
+        80,
+        280
       ],
-      "id": "def2ac38-aef4-4ca3-b268-68d69798558e",
+      "id": "602a8453-ddb6-4fc3-85c9-3c209471b1df",
       "name": "Merge"
     },
     {
@@ -584,11 +572,24 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -220,
-        380
+        240,
+        280
       ],
-      "id": "063b8422-7498-40f1-8a9d-2592d4c0b467",
+      "id": "5db147bb-93aa-41c5-b2d1-c9a260ec1126",
       "name": "Code1"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -3100,
+        420
+      ],
+      "id": "f7f22460-ef54-4d2c-ba07-b7cce3ba938e",
+      "name": "When Executed by Another Workflow"
     }
   ],
   "pinData": {},
@@ -695,6 +696,17 @@
         ]
       ]
     },
+    "Sub Domain Loop ": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "Fetch Sub Domain": {
       "main": [
         [
@@ -760,11 +772,6 @@
         ]
       ]
     },
-    "Log Status SubDomain": {
-      "main": [
-        []
-      ]
-    },
     "List Domains1": {
       "main": [
         [
@@ -782,17 +789,6 @@
         [
           {
             "node": "Fetch Sub Domain",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Sub Domain Loop ": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -887,17 +883,27 @@
           }
         ]
       ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "List Domains1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "eabf560b-4ddb-46f7-bdff-9e409af772f9",
+  "versionId": "32c1a97c-5a5a-4f9d-a010-3960ddc6273e",
   "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "67d647721e03059cdf108441440a2d41ef4810359836c5d00eac2393b27716f0"
+    "instanceId": "da33118653b457a38767846f003a1ddd3b6e88f9568f32164fe696d219064bab"
   },
-  "id": "q9qCuXIBHYGcJFUh",
+  "id": "ySNnYcUFePzs1yWC",
   "tags": []
 }
