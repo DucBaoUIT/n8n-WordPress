@@ -77,15 +77,3 @@
 ------------------
 ```
 
-```
-🚨Domain Error: https://vietnix.vn/sinh-nhat-vietnix/
-🔗 https://static-xf1.vietnix.vn/wp-content/uploads/2024/10/Lable_new.svg (Error: ENOTFOUND)
-------------------
-```
-
-```
-🚨Domain Error: https://vietnix.vn/vps-windows/
-🔗 https://static-xf1.vietnix.vn/wp-content/uploads/2024/10/Lable_new.svg (Error: ENOTFOUND)
-------------------
-```
-
