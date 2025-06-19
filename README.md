@@ -283,6 +283,215 @@ Cài dặt Node Excute Workflow như sau để gọi các Workflow khác. Lưu �
 
 </div>
 
+## B. Workflow thực thi phân tích hình ảnh (Cả 4 Workflow đều giống nhau)
+
+### Mô hình tổng quan 
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/63595904-f123-4c7d-8246-500ea86a3112)
+
+</div>
+
+### 1. Kiểm tra trạng thái Website và lấy dữ liệu hình ảnh
+
+#### Hình ảnh tổng quan 
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/8aa51a78-e2e4-4752-a6fc-cf5f105427fb)
+
+</div>
+
+#### Node 1: When Executed by Another Workflow - Node này sử dụng để trigger Workflow khi được gửi yêu cầu tới 
+
+Tại mục "Input data mode", chọn "Accept All data" để chấp nhận mọi dữ liệu yêu cầu trigger workflow gửi tới.
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/d4535c57-be7a-4401-90e9-2e6fa26b1915)
+
+</div>
+
+#### Node 2: Loop - Tách dữ liệu đầu vào thành nhiều vòng lặp để xử lý
+
+Tại Loop của mỗi Workflow này, chúng ta sẽ chọn Batch size phù hợp để quét số lượng domain
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/34171ce1-6c93-4392-b681-2395c33369a8)
+
+</div>
+
+#### Node 3: HTTP Request - Node này sử dụng để đảm bảo các doamin đầu vào khả dung và lấy data từ các domain
+
+Lưu ý
+
+Trường `{{ $json.domain }}` để lấy Domain từ node trước
+Có thể tắt Full Response nếu muốn tránh dữ liệu quá nặng
+
+<div align="center">
+  
+![image](https://github.com/user-attachments/assets/f31f1fb9-fb47-48e9-9d03-ea7f909b56a4)
+
+</div>
+
+#### Node 4: Discord - Gửi thông báo nếu Node 2 có website lỗi 
+
+Tại Message của Node Discord, cấu hình như sau. Lưu ý
+
++ Domain: {{ $json.domain }}: Lấy Domain từ node trước
++ Status: {{ $json.error.status }}: Lấy trạng thái error từ node trước
++ Log: {{ $json.error.code }}: Lấy code error từ node trước
+
+```
+Domain: {{ $json.domain }}
+Status: {{ $json.error.status }}
+Log: {{ $json.error.code }}
+////////////////////////////////
+```
+
+<div align="center">
+
+![Screenshot from 2025-06-15 20-36-41](https://github.com/user-attachments/assets/32d4bc55-310c-4c21-a303-be86bea1b49e)
+
+</div>
+
+### 2. Xử lý hình ảnh
+
+#### Hình ảnh tổng quan 
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/7444b90d-d914-485d-9f68-f4371b313f63)
+
+</div>
+
+#### Node 1: IF - Sử dụng node này để lọc mảng trống
+
+Đặt điều kiện nếu mảng "Images" trả về từ node trước là trống (Trnag không có hình ảnh để quét) -> Chạy vòng lặp tiếp theo
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/4a9f07e0-c5bb-476a-a1d3-fb71982b530e)
+
+</div>
+
+#### Node 2: Split Out - Sử dụng node này để tách toàn bộ image khỏi mảng 
+
+Sử dụng Node Split out để tránh việc các node sau phải xử lý dữ liệu mảng quá lớn. Cài đặt "Field To Split Out" là "image" tương ứng với mảng trả về từ kết quả trước
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/ae83fa00-43fc-43e6-9c0a-7da3a79251f1)
+
+</div>
+
+#### Node 3: Code - Lọc các hình ảnh qua code JS
+
+Đảm bảo lọc các hình ảnh có giá trị trống và các ảnh "Data URI" trước khi thực hiện quét. Sử dụng code JS sau 
+
+```
+return items.filter(item => {
+  const images = item.json.image;
+
+  // Hàm kiểm tra URL hợp lệ, không phải Data URI
+  const isValidUrl = (url) => {
+    if (typeof url !== 'string') return false;
+    const trimmed = url.trim();
+    return (
+      trimmed !== '' &&
+      !trimmed.startsWith('data:') // Loại bỏ Data URI
+    );
+  };
+
+  if (Array.isArray(images)) {
+    const filtered = images.filter(isValidUrl);
+    if (filtered.length === 0) return false;
+
+    item.json.image = filtered; // Giữ lại mảng image đã lọc
+    return true;
+  }
+
+  if (typeof images === 'string') {
+    return isValidUrl(images);
+  }
+
+  return false;
+});
+```
+
+Node 4: Remove Duplicates - Loại bỏ các ảnh có đường link trùng
+
+Mục đích của việc loại bỏ trên để giảm thiểu lượng dữ liệu hình ảnh node tiếp theo phải quét
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/ed195bba-527e-4484-a662-60b2297f4ebb)
+
+</div>
+
+### 3. Kiểm tra hình ảnh và thông báo 
+
+#### Hình ảnh tổng quan 
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/3ff872cc-8f96-414f-b38e-b2b0d5a16be0)
+
+</div>
+
+#### Node 1: HTTP Request - Kiểm tra các đường link hình ảnh trong website
+
+Node này chỉ cần các giá trị trường HEAD để lấy được status của nó. Nếu quét lỗi sẽ chạy theo nhánh error qua node tiếp theo, nếu không sẽ sang vòng lặp tiếp theo
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/ec9abb02-3695-4523-a488-4c25ae943f4e)
+
+</div>
+
+#### Node 2: Code - Gộp tất cả file lỗi của domain chứa nó để thông báo chung 1 lần
+
+Thực hiện code JavaScript sau để gộp các lỗi lại
+
+```
+const domain = $('Loop Over Items').item?.json?.domain || 'Unknown';
+const seen = new Set();
+const results = [];
+
+for (const item of items) {
+  const error = item.json?.error;
+  const statusCode = item.json?.error?.code || 'Unknown';
+  const images = item.json?.image || [];
+
+  for (const url of Array.isArray(images) ? images : [images]) {
+    if (url && error && !seen.has(url)) {
+      seen.add(url);
+      results.push(`🔗URL: ${url} (💥Error: ${statusCode})`);
+    }
+  }
+}
+
+return [{
+  json: {
+    content: results.length
+      ? `🚨Domain Error: ${domain}\n\n${results.slice(0, 50).join('\n')}`
+      : '',
+  },
+}];
+```
+
+#### Node 3: Discord - Thông báo lỗi
+
+Node Discord sẽ cấu hình lấy content từ node code đã gộp lỗi trước rồi thông báo qua Webhook
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/4858fe93-b2d4-4582-8cf2-d0f14ce2dd56)
+
+</div>
+
 //////////////////////////////////////////////////
 
 
@@ -361,18 +570,6 @@ Node 4: Discord - Sử dụng để gửi thông báo lỗi tới channel Images
 
 </div>
 
-### Node 2: HTTP Request - Gửi request về domain này để đảm bảo tính truy cập, nếu có error status sẽ gửi thông báo Discord channel "Status" 
-
-Lưu ý
-
-Trường `{{ $json.domain }}` để lấy Domain từ node trước
-
-<div align="center">
-  
-![image](https://github.com/user-attachments/assets/f31f1fb9-fb47-48e9-9d03-ea7f909b56a4)
-
-</div>
-
 ### Node 3 - Node 4: HTML - Sử dụng 2 Node này để tách và lấy toàn bộ images và iframes từ kết quả trả về của node trước. Kết quả tra về sẽ là 2 mảng có giá trị images và iframes
 
 Lọc ra tất cả Images và IFrame từ trang web thành 2 mảng tương ứng. Thực hiện bằng cách sử dụng node HTML với lựa chọn “Extract HTML Content” và cấu hình như sau để lấy ảnh và iFrames.
@@ -440,26 +637,6 @@ Tại nhánh false, thêm 2 node điều kiện để kiểm tra 1 trong 2 mản
 
 </div>
 
-### Node 8: Discord - Gửi thông báo nếu Node 2 có website lỗi 
-
-Tại Message của Node Discord, cấu hình như sau. Lưu ý
-
-+ Domain: {{ $json.domain }}: Lấy Domain từ node trước
-+ Status: {{ $json.error.status }}: Lấy trạng thái error từ node trước
-+ Log: {{ $json.error.code }}: Lấy code error từ node trước
-
-```
-Domain: {{ $json.domain }}
-Status: {{ $json.error.status }}
-Log: {{ $json.error.code }}
-////////////////////////////////
-```
-
-<div align="center">
-
-![Screenshot from 2025-06-15 20-36-41](https://github.com/user-attachments/assets/32d4bc55-310c-4c21-a303-be86bea1b49e)
-
-</div>
 
 ### Node 9 - Node 10: Split Out - Dùng 2 node này để tách mảng ra thành từng thành phần images và iframes tránh việc xử lý quá tải ở bước tiếp theo
 
