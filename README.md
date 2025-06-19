@@ -492,290 +492,64 @@ Node Discord sẽ cấu hình lấy content từ node code đã gộp lỗi trư
 
 </div>
 
-//////////////////////////////////////////////////
+# Thực nghiệm 
 
+## Domain lỗi (Thêm /111) đằng sau Domain
 
-Quy trình thực hiện mô hình sẽ bao gồm 6 bước chính với các node cụ thể
-
-1. Bước 1 - Lên lịch để thực hiện kiểm tra định kì
-
-Node 1: Cron Jobs - Đây là 1 trong những node trigger của n8n được sử dụng để trigger workflow chạy theo định kì được cấu hình
-
-2. Bước 2 - Lấy tất cả Domain
-
-Node 1: Google Sheets - Sử dụng node này để lấy tất cả Domain tron Google Sheets 
-
-Node 2: Code - Tạo ra đoạn mã JavaScript để parse tất cả Domain trong Google Sheets thành dạng code sử dụng cho Workflow
-
-3. Bước 3 - Kiểm tra trạng thái kết nối các Domain và kiểm tra sự tồn tại của site XML
-
-Node 1: HTTP Request - Gửi các request đến các website và kiểm tra phản hồi, nếu trạng thái status lỗi sẽ thông báo về Discord channel "Status", nếu không có lỗi sẽ thực hiện node kế
-
-Node 2: HTTP Request - Gửi các request để kiểm tra xem tính năng để xem website XML đã bật chưa, nếu chưa thực hiện báo về Discord channel "Status", nếu không có lỗi sang bước 4
-
-Node 3: Discord - Gửi thông báo qua message được trả về từ node Code
-
-4. Lấy toàn bộ tên miền con từ website gốc
-
-Node 1: Code - Sử dụng Code JavaScript để tách toàn bộ các site Sub XML từ kết quả trả về của node HTTP Request trước
-
-Node 2: HTTP Request - Gửi request đến toàn bộ site sub XML để kiểm tra trạng thái truy cập và lấy tất cả Domain trong đó
-
-Node 3: Code - Sử dụng code JavaScript để lấy toàn bộ domain từ sub XML (Cũng là toàn bộ Domain của website)
-
-5. Tách Images và IFrames
-
-Node 1: Loop Over Items - Sử dụng node này để tách tất cả giá trị domain lấy từ bước trước ra để chạy kiểm tra, thay vì kiểm tra tổng thể (khi lỗi sẽ khó xác định site lỗi)
-
-Node 2: HTTP Request - Gửi request về domain này để đảm bảo tính truy cập, nếu có error status sẽ gửi thông báo Discord channel "Status" 
-
-Node 3: HTML - Sử dụng 2 Node này để tách và lấy toàn bộ images và iframes từ kết quả trả về của node trước. Kết quả tra về sẽ là 2 mảng có giá trị images và iframes
-
-Node 4: Node Code - Lọc các Data URI từ image và thêm đường dẫn http: cho các website chưa có 
-
-Node 5: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả 2 mảng đều rỗng thì quay lại vòng lặp, nếu không sẽ thực hiện node tiếp theo 
-
-Node 6 - Node 7: IF - Sử dụng node điều kiện để kiểm tra trống Images và IFrame tránh việc quét báo lỗi, nếu mảng trống thì bỏ qua, nếu mảng tồn tại thì đến bước kiểm tra 
-
-Node 8: Discord - Gửi thông báo nếu Node 2 có website lỗi 
-
-Node 9 - Node 10: Split Out - Dùng 2 node này để tách mảng ra thành từng thành phần images và iframes tránh việc xử lý quá tải ở bước tiếp theo
-
-6. Kiểm tra và thông báo 
-
-Node 1 - Node 2: HTTP Request - Sử dụng 2 node này để request đến hình ảnh và iframe của trang web
-
-Node 3: IF - Sử dụng node điều kiện để kiểm tra nếu tồn tại lỗi sẽ gửi thông báo về Discord, nếu không sẽ quay lại vòng lặp
-
-Node 4: Discord - Sử dụng để gửi thông báo lỗi tới channel Images, IFrames
-
-# Các bước thực hiện
-
-
-## 5. Kiểm tra Images và IFrames
-
-### Hình ảnh tổng quan 
-
-<div align='center'>
-  
-![image](https://github.com/user-attachments/assets/22657da4-e7c9-4c24-905e-1ecda612611a)
-
-</div>
-
-### Node 1: Loop Over Items - Sử dụng node này để tách tất cả giá trị domain lấy từ bước trước ra để chạy kiểm tra, thay vì kiểm tra tổng thể (khi lỗi sẽ khó xác định site lỗi)
+Quy trình Workflow
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/1f416f4e-4224-499f-838f-d2652cdb393c)
+![image](https://github.com/user-attachments/assets/95ab31d4-e97b-4dd5-8293-b2fc16905260)
 
 </div>
 
-### Node 3 - Node 4: HTML - Sử dụng 2 Node này để tách và lấy toàn bộ images và iframes từ kết quả trả về của node trước. Kết quả tra về sẽ là 2 mảng có giá trị images và iframes
-
-Lọc ra tất cả Images và IFrame từ trang web thành 2 mảng tương ứng. Thực hiện bằng cách sử dụng node HTML với lựa chọn “Extract HTML Content” và cấu hình như sau để lấy ảnh và iFrames.
-
-<div align='center'>
-  
-![Screenshot from 2025-06-16 14-53-19](https://github.com/user-attachments/assets/a13b8488-f3ba-4e55-93d4-ff77052a1a7e)
-
-</div>
-
-### Node 4: Node Code - Lọc Data URI và thêm đường dẫn cho các image chưa có
-
-Sử dụng code sau
-
-```
-return items.map(item => {
-  const images = item.json.image || [];
-
-  const filtered = images
-    .filter(src => typeof src === 'string' && !src.startsWith('data:')) // loại bỏ base64
-    .map(src => {
-      if (src.startsWith('//')) {
-        return 'https:' + src;
-      }
-      if (!src.startsWith('http')) {
-        return 'https://' + src;
-      }
-      return src;
-    });
-
-  return {
-    json: {
-      ...item.json,
-      image: filtered,
-    },
-  };
-});
-```
-
-<div align='center'>
-
-![image](https://github.com/user-attachments/assets/988d3044-da24-40eb-87d6-9dad5964fe07)
-
-</div>
-
-### Node 5: IF - Sử dụng node điều kiện để kiểm tra rỗng, nếu cả 2 mảng đều rỗng thì quay lại vòng lặp, nếu không sẽ thực hiện node tiếp theo 
-
-Để tránh trường hợp Website không có hình ảnh và không có iFrame để kiểm tra, thêm node IF với điều kiện các mảng trống, nếu các mảng trống thì sẽ chạy nhánh “True” quay về vòng lặp thực hiện kiểm tra website tiếp theo. Nếu 1 trong 2 mảng có phần tử thì sẽ chạy nhanh false để kiểm tra. Các trường json bạn có thể kéo thả từ bước gộp trước. Lưu ý, chon kiểu dữ liệu là mảng để tránh lỗi.
-
-<div align='center'>
-
-![image](https://github.com/user-attachments/assets/16580317-a154-4125-bcc2-af957cfeb7bd)
-
-</div>
-
-### Node 6 - Node 7: IF - Sử dụng node điều kiện để kiểm tra trống Images và IFrame tránh việc quét báo lỗi, nếu mảng trống thì bỏ qua, nếu mảng tồn tại thì đến bước kiểm tra 
-
-Tại nhánh false, thêm 2 node điều kiện để kiểm tra 1 trong 2 mảng trống, mảng nào trống sẽ bỏ qua không check tránh lỗi không mong muốn
-
-<div align='center'>
-  
-![image](https://github.com/user-attachments/assets/ef5d1f5c-7020-4c49-81b0-bbd75f258d0c)
-
-![image](https://github.com/user-attachments/assets/38252912-fe3e-46a9-afc7-99ef41099021)
-
-</div>
-
-
-### Node 9 - Node 10: Split Out - Dùng 2 node này để tách mảng ra thành từng thành phần images và iframes tránh việc xử lý quá tải ở bước tiếp theo
-
-Cấu hình node Split Out kéo 2 mảng images và iframe vào 2 node tương ứng để tách xử lý từng dữ liệu trong mảng
+Có thể thấy được Workflow sẽ thực thi nhánh false tại node quét website và gửi thông báo lỗi về Discord như hình dưới
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/57baf271-fb5e-4b7c-babd-e3a713c75048)
+![image](https://github.com/user-attachments/assets/176f2f1b-6b0f-4d95-bc1e-7f0049bb28d0)
 
 </div>
 
-## 6. Kiểm tra và gửi thông báo
+## Sitemap XML lỗi (Sửa tên sitemap)
 
-### Hình ảnh tổng quan 
+Quy trình Workflow
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/e4ae4d1b-b3c9-4538-bd50-0cb5b8f4e281)
+![image](https://github.com/user-attachments/assets/713bfe31-1946-4bd5-b079-38f34f05ab2d)
 
 </div>
 
-### Node 1 - Node 2: HTTP Request - Sử dụng 2 node này để request đến hình ảnh và iframe của trang web
-
-Thêm 2 node HTTP Request để tiến hành duyệt qua các Images và IFrames có trong mảng. Nếu không có lỗi sẽ quay lại vòng lặp, nếu có lỗi sẽ thông báo ngay lập tức về Discord
-
-<div align='center'>
-
-![image](https://github.com/user-attachments/assets/8ab49825-1013-42af-8b45-2f55a2ef329b)
-
-
-![image](https://github.com/user-attachments/assets/808e5c2a-6c3c-48ac-9f55-818e283eca31)
-
-</div>
-
-### Node 3: IF - Sử dụng node điều kiện để kiểm tra nếu tồn tại lỗi sẽ gửi thông báo về Discord, nếu không sẽ quay lại vòng lặp
-
-Thêm 1 node IF để check status.
+Workflow sẽ thực thi nhánh false tại node quét sitemap và gửi thông báo sau về Discord
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/fab31575-d39b-4a18-95c2-4ead5dd14b13)
+![image](https://github.com/user-attachments/assets/33cb3ae5-d968-481c-ab7c-a89627aed005)
 
 </div>
 
-### Node 4: Discord - Sử dụng để gửi thông báo lỗi tới channel Images, IFrames
-Cuối cùng thưc hiện thêm node Discord để gửi thông báo, bạn có thể lấy Webhook và thêm vào Credentials Discord. Gửi message về channel Images IFrame với format như sau.
+## Quét site bình thường nếu không lỗi sitemap và domain 
 
-Lưu ý:
+Quy trình Workflow điều hướng
 
-+ {{ $('Loop Over Items').item.json.domain }}: Lấy giá trị Domain từ node vòng lặp
-+ ❌ Error Code: {{ $('Check Error').item.json.error.code }}: Lấy error code từ node "Check Error"
-+ ❌ Error Status: {{ $('Check Error').item.json.error.status }}: Lấy error status từ node "Check Error"
-+ 📍 Destination: {{ $json.error.input }}: Lấy input(File lỗi) từ node trước
+![image](https://github.com/user-attachments/assets/f9e209e8-348f-45b1-bbcc-05a4f2d67322)
 
-```
+Khi này có thể thấy vòng lặp sẽ chạy qua toàn bộ node IF để xét điều kiện index và node IF sẽ duyệt các điều kiện đó để đưa dữ liệu vào Workflow thỏa mãn, Sau mỗi lần hoàn thành Workflow sẽ chạy vào node "NoOp" để chạy 1000 items kế tiếp
 
-🚨 Domain Error on Images IFrames Report
-
-{{ $('Loop Over Items').item.json.domain }}
-❌ Error Code: {{ $('Check Error').item.json.error.code }}
-❌ Error Status: {{ $('Check Error').item.json.error.status }}
-📍 Destination: {{ $json.error.input }}
-!!!!!
-```
+Thứ tự Workflow
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/fda22c8e-3924-4a31-8693-153e49454053)
+![Screenshot from 2025-06-19 16-45-53](https://github.com/user-attachments/assets/d4209e61-6444-472b-b0d6-0aaf519ed469)
 
 </div>
 
-## Demo 
-
-### 1. Trang web không thể truy cập
-
-Sừa Domain trên Google Sheet (Thêm /111 đằng sau Domain) và chạy Workflow
-
-Workflow sẽ chạy từ node "Fetch Domain" để quét Domain sang node Discord để thông báo Status và cuối cùng quay lại vòng lặp để chạy các Domain khác. Đối với Domain lỗi sẽ không được chạy nhánh True vào vòng lặp 
+Cách thông báo lỗi hiển thị
 
 <div align="center">
 
-![th1](https://github.com/user-attachments/assets/5155e8ed-cc5d-4465-b13e-07c210bddb4f)
+![image](https://github.com/user-attachments/assets/4f23b47f-7df0-4748-83cb-03adf863fc66)
 
 </div>
-
-Thông báo lỗi
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/97fc38a1-1151-499e-9994-0e6b882ae614)
-
-</div>
-
-### 2. Trang lỗi site XML 
-
-Thực hiện tắt site bằng lệnh `a2dissite` và chạy Workflow
-
-Workflow sẽ chạy từ node "Get Sitemap XML" ra nhánh false và tiến hành thông báo về Discord, sau đó quay lại vòng lặp để quét Domain khác
-
-<div align="center">
-
-![455262620-abed42dc-e624-43df-89c4-a30602a74159](https://github.com/user-attachments/assets/1d81525a-3f90-450e-b0d3-71c1fd9099ac)
-
-</div>
-
-Thông báo lỗi 
-
-<div align="center"
-
-![image](https://github.com/user-attachments/assets/417132ca-6437-47be-9006-5816367cee49)
-
-</div>
-
-### 3. Lỗi Images IFrames bất kì
-
-Thêm đường dẫn lỗi ảnh vào site 2 và thực hiện test Workflow
-
-Workflow sẽ chạy đúng quy trình tất cả các bước và đi vào ra nhánh True tại Node IF cuối cùng. Sau khi thông báo sẽ quay lại vòng lặp quét domain tiếp theo
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/232d8871-60e1-4a15-baec-9123dc3ce385)
-
-</div>
-
-Thông báo lỗi 
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/d04a78ea-826f-4b5d-a725-b6f866784130)
-
-</div>
-
-### 4. Tất cả website chạy bình thường
-
-Workflow khi này sẽ không chạy vào các nhánh báo lỗi nữa
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/50fbe89d-3d41-4844-a86d-35befd6304a4)
-
-<div>
