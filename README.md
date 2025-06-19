@@ -553,3 +553,136 @@ Cách thông báo lỗi hiển thị
 ![image](https://github.com/user-attachments/assets/4f23b47f-7df0-4748-83cb-03adf863fc66)
 
 </div>
+
+# Tích hợp quét IFrames 
+
+## Workflow điều hướng
+
+Bên cạnh các hình ảnh, đường link IFrames cũng nên được kiểm tra 1 cách kĩ càng để tránh những lỗi sai sót ảnh hưởng tới người dùng
+
+Tích hợp quét IFrames sẽ khiến cho lượng dữ liệu đầu vào khá lớn trong quá trình truyền tại Workflow nên sẽ cần phải chia nhỏ Batch số lượng Domain mỗi lần quét tại Workflow điều hướng từ 1000 thành 500. Từ đó, sẽ có được mô hình tổng quan của Workflow điều hướng như sau
+
+![image](https://github.com/user-attachments/assets/0416c6f9-b97c-44eb-b5ad-66d4811d9a17)
+
+## Workflow thực thi 
+
+Thực hiện chia ra 8 Workflow với mỗi Workflow thực hiện 500 Batches dữ liệu (Phân loại qua node IF) để giảm thiểu tối đa lỗi node.
+
+Đối với các Workflow thực thi, giữ nguyên nhánh quét Image và thêm 1 nhánh quét Image với các node như hình dưới. TẤT CẢ CÁC WORKFLOW THỰC THI ĐỀU GIỐNG NHAU
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/2dd45db0-5e41-4d3b-b766-5ee414922cf3)
+
+</div>
+
+Lưu ý,
+
+Chỉnh sửa "Node Extract": Thêm trường IFrame để tách các IFrame từ trang web
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/9f3560f5-26b4-409d-8fd0-c90a2976c353)
+
+</div>
+
+Thêm 1 Node IF: Để kiểm tra mảng Iframe rỗng
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/f0133fd6-6e0e-4860-aa70-a730c9a06f4f)
+
+</div>
+
+Thêm 1 Node Split: Tách giá trị IFrame ra khỏi mảng 
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/f6b08b82-6006-4225-922f-15ca9580cb68)
+
+</div>
+
+Thêm 1 node Code: Lọc các giá trị Null, không xác định. Thực hiện code JavaScript sau 
+
+```
+return items.filter(item => {
+  const iframe = item.json.iframe;
+
+  if (typeof iframe !== 'string') return false;
+  if (iframe.trim() === '') return false;
+
+  return true;
+});
+```
+
+Thêm 1 node Remove Duplicates: Loại bỏ các giá trị IFrame trùng
+
+Giá trị cấu hình giống node Remove Duplicates của Images
+
+Thêm 1 node HTTP Request: Để kiểm tra IFrames
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/8d8ad357-ebd3-4fa9-837c-40b8c7b0d6b1)
+
+</div>
+
+Thêm 1 node Merge: Để gộp lỗi Images, IFrames của 1 trang web. 
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/4891825e-fc93-45b6-87ea-22de4628211f)
+
+</div>
+
+Chỉnh sửa node Code: Gộp tất cả lỗi Images IFrames trong 1 Batch để thực hiện thông báo. Thực hiện code JS sau
+
+```
+const domain = $('Loop Over Items').item?.json?.domain || 'Unknown';
+const seen = new Set();
+const results = [];
+
+for (const item of items) {
+  const error = item.json?.error;
+  const statusCode = item.json?.error?.code || 'Unknown';
+
+  const images = item.json?.image || [];
+  const iframes = item.json?.iframe || [];
+
+  const imageList = Array.isArray(images) ? images : [images];
+  const iframeList = Array.isArray(iframes) ? iframes : [iframes];
+
+  for (const url of imageList) {
+    if (url && error && !seen.has(`image:${url}`)) {
+      seen.add(`image:${url}`);
+      results.push(`🖼️ Image: ${url} (Error: ${statusCode})`);
+    }
+  }
+
+  for (const url of iframeList) {
+    if (url && error && !seen.has(`iframe:${url}`)) {
+      seen.add(`iframe:${url}`);
+      results.push(`🧩 Iframe: ${url} (Error: ${statusCode})`);
+    }
+  }
+}
+
+const limited = results.slice(0, 50);
+
+return [{
+  json: {
+    content: limited.length
+      ? `🚨Domain Error: ${domain}\n${limited.join('\n')}`
+      : '',
+  },
+}];
+```
+## Thử nghiệm 
+
+Sau khi chạy Workflow, nếu có lỗi sẽ hiển thị thông báo như sau
+
+<div akign="center">
+  
+![image](https://github.com/user-attachments/assets/b47da3c7-99cb-4cac-b36e-3193901c4447)
+
+</div>
