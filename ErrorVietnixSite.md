@@ -10,6 +10,11 @@
 🚨Domain Error: https://vietnix.vn/facebook-bi-bop-tuong-tac/
 🔗 https://lh7-us.googleusercontent.com/L5Pwk_s55mQBwLo6QVWBhP_gmmJum3VQaYmx_tcdMz-NIpr67Md184fuTnUSDoEqw1SLtvvw0XA1R6vYk0Plk18vl7IKhv2YQzeyaVht2zRMGOCvdvjAKlpoxEytpsfrKGtiKVi1JeVZwNT68Mrz59c (Error: ERR_BAD_REQUEST)
 🔗 https://lh7-us.googleusercontent.com/_Asp-nJXQYVjDmbo0HTLXpyONbnV2sjvWeVXrYkvxbw3u01f2sueDSXtWTDAt-tjD3-9MSBOoMqsy3qoBHDiCBAxQhooquv3kxOLaBg7-zf0u3hR7wql6OSSxnkHSxR0-8LKRJteyyYx3R1thnG0db8 (Error: ERR_BAD_REQUEST)
+------------------
+```
+
+```
+🚨Domain Error: https://vietnix.vn/upload-video-len-youtube-khong-vi-pham-ban-quyen/
 🔗 https://lh5.googleusercontent.com/ILL7oHGzYcnnZupuZkdSKBLy3fjrxKJbV-5atYuRLgq9U1fC9kLUhP1hJ61JGokuxRUS8ma7sU1UVJQHK-OWSLWgOqhf85EcRrtM78CnS0qFGgW1tZ8MsNxCHoO2i-8Tb93VeMjhrf3w2M48bbwFAF7XEt9_9lSWR70WzdqxVSwgElB7QgyVkG-JkQ (Error: ERR_BAD_REQUEST)
 ------------------
 ```
@@ -65,15 +70,20 @@
 ```
 
 ```
-🚨Domain Error: https://vietnix.vn/tao-card-loopback/
-🔗 data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw== (Error: ERR_BAD_REQUEST)
-------------------
-```
-
-```
 🚨Domain Error: https://vietnix.vn/fanpage-la-gi/
 🔗 https://lh6.googleusercontent.com/SDvZaSIPWBtjU-OLM4vFXmYMdOMKDgygnebJRM7K1-5CbEtbfA33GDU7nT1sAJRmdOmjToyllb_wmKmVmMxyMmGWtA4ECXaZXbwhzhp6OmPQurIRUzqSdCUNx2UHsoHj2CQTGT16SdsltgJOtN8RYzE (Error: ERR_BAD_REQUEST)
 🔗 https://lh4.googleusercontent.com/m0AdaBA2qIzrWn3sS77HcECr1UpilFswVSnkMEhkTvTUiR3FzLrJXdP3PVGLCUVCO0zXzg6wYOnbD3xT5YD3oVoVL-zfu1oUXp_0IeunqTxj2ufzy39FD-nj1e4xWwsKJNQeSBgka2vd7XglLd8pnGg (Error: ERR_BAD_REQUEST)
 ------------------
 ```
 
+```
+🚨Domain Error: https://vietnix.vn/black-friday/
+🔗 https://static-xf1.vietnix.vn/wp-content/uploads/2024/10/Lable_new.svg (Error: ENOTFOUND)
+------------------
+```
+
+```
+🚨Domain Error: https://vietnix.vn/nodejs-hosting/
+🔗 https://static-xf1.vietnix.vn/wp-content/uploads/2024/10/Lable_new.svg (Error: ENOTFOUND)
+------------------
+```
