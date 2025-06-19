@@ -10,6 +10,8 @@ n8n là một nền tảng tự động hóa quy trình làm việc mã nguồn 
 
 ### Mô hình tổng quan 
 
+![image](https://github.com/user-attachments/assets/a105a717-5bd7-4d38-90fb-984bfdd4e1eb)
+
 ### 1. Lên lịch để kiểm tra website
 
 ##### Node 1: Cron Jobs - Đây là 1 trong những node trigger của n8n được sử dụng để trigger workflow chạy theo định kì được cấu hình
@@ -265,6 +267,21 @@ Tại mỗi node IF, đặt điều kiện sao cho tổng số index là 1000 t�
 
 #### Node 6 - 7 - 8 - 9: Execute Workflow - Sử dụng node này để gọi các Workflow khác hoạt động 
 
+Cài dặt Node Excute Workflow như sau để gọi các Workflow khác. Lưu ý
+
++ Tại trường Workflow chọn "From list" để chọn từ các danh sách Workflow đã tạo
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/a6351522-8928-4a60-9952-da19857e1d1f)
+
+![image](https://github.com/user-attachments/assets/79193039-d0f5-4eef-9c6e-c515aa4fb4dc)
+
+![image](https://github.com/user-attachments/assets/e2aaf745-c8ef-4119-9bdf-6ef87389cdcc)
+
+![image](https://github.com/user-attachments/assets/09f1396f-97b0-441f-8fe5-f163220a5e02)
+
+</div>
 
 //////////////////////////////////////////////////
 
