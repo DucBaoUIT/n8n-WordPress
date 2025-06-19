@@ -1,10 +1,15 @@
 # Tổng quan 
 
-n8n là một nền tảng tự động hóa quy trình làm việc mã nguồn mở, cho phép bạn kết nối và tự động hóa các ứng dụng, dịch vụ web thông qua giao diện trực quan, không yêu cầu kỹ năng lập trình chuyên sâu. Công cụ này giúp chuyển đổi các tác vụ thủ công, lặp lại thành các luồng công việc tự động hiệu quả
+n8n là một nền tảng tự động hóa quy trình làm việc mã nguồn mở, cho phép bạn kết nối và tự động hóa các ứng dụng, dịch vụ web thông qua giao diện trực quan, không yêu cầu kỹ năng lập trình chuyên sâu. Công cụ này giúp chuyển đổi các tác vụ thủ công, lặp lại thành các luồng công việc tự động hiệu quả. Bài viết này sẽ hướng dẫn các bạn cách sử dụng N8N để quét một hoặc nhiều trang WordPress mong muốn (Bài viết này sẽ lấy trang vietnix.vn làm ví dụ)
 
-Mô hình dưới đây sẽ hướng dẫn các bạn cách tạo workflow N8N để kiểm tra website WordPress và các website con có bị lỗi images và iframes hay không.
+Để quét các trang lớn như vietnix.vn, cần phải chia thành nhiều Workflow khác nhau để giảm lượng dữ liệu ghi vào các node quá nhiều dẫn đến các lỗi như crash Node hoặc "Invalid String Length"
 
-Mô hình tổng quan
+# Các Workflow
+
+## 1. Workflow điều hướng
+
+Workflow này sẽ thực hiện các bước sau
+
 
 ![image](https://github.com/user-attachments/assets/c3d748cb-f965-4277-855d-11a6b54ecb0e)
 
