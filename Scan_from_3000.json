@@ -1,0 +1,417 @@
+{
+  "name": "Scan from 3000",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Sub Domain Loop ",
+      "typeVersion": 1,
+      "position": [
+        1360,
+        380
+      ],
+      "id": "5beaef6f-4d86-48c9-904d-bbbde409823d"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{ $json.domain }}",
+        "allowUnauthorizedCerts": true,
+        "responseFormat": "string",
+        "options": {
+          "fullResponse": false,
+          "followAllRedirects": true,
+          "followRedirect": false,
+          "ignoreResponseCode": false
+        }
+      },
+      "name": "Fetch Sub Domain",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        60
+      ],
+      "id": "a9196355-54ee-4fb5-9bc5-0b8530a7b844",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "requestMethod": "HEAD",
+        "url": "={{ $json.image }}",
+        "allowUnauthorizedCerts": true,
+        "responseFormat": "string",
+        "options": {
+          "batchInterval": 1000,
+          "fullResponse": false,
+          "followAllRedirects": true,
+          "followRedirect": false
+        }
+      },
+      "name": "Check IMAGES",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        680,
+        60
+      ],
+      "id": "8229450d-f57f-4122-9ea0-22a9cacbfa2c",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $json.content }}\n------------------",
+        "options": {
+          "wait": false
+        }
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        60
+      ],
+      "id": "13abb017-7ae9-459b-a915-b5862becedde",
+      "name": "Log Images, IFrame",
+      "webhookId": "e5912c40-c879-43c5-b221-82754de90ae6",
+      "executeOnce": true,
+      "alwaysOutputData": false,
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "ocy9BCF6vbNvMPr5",
+          "name": "Discord Webhook Images IFrames "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 20,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -680,
+        120
+      ],
+      "id": "804098b4-3586-4e94-857c-85d39d94dc70",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "image",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        120,
+        60
+      ],
+      "id": "a445323e-7471-4669-9804-4862943805ae",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "image",
+              "cssSelector": "img",
+              "returnValue": "attribute",
+              "attribute": "src",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        -240,
+        40
+      ],
+      "id": "9f907148-109d-41dd-b331-a3f8a7fc5649",
+      "name": "Extract "
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        500,
+        60
+      ],
+      "id": "b9eac937-8006-49da-b0d3-20c22a65cf78",
+      "name": "Remove Duplicates",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=Domain: {{ $json.domain }}\nStatus: {{ $json.error.status }}\nLog: {{ $json.error.code }}\n////////////////////////////////",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -200,
+        340
+      ],
+      "id": "48cc77da-c3ef-4a4c-8c46-6982f471fa1a",
+      "name": "Log Status SubDomain1",
+      "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "ijERmmgaOVpveUgv",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -940,
+        -40
+      ],
+      "id": "c0adbd8e-ecf2-4007-98f2-5cf06de597c6",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.filter(item => {\n  const images = item.json.image;\n\n  // Hàm kiểm tra URL hợp lệ, không phải Data URI\n  const isValidUrl = (url) => {\n    if (typeof url !== 'string') return false;\n    const trimmed = url.trim();\n    return (\n      trimmed !== '' &&\n      !trimmed.startsWith('data:') // Loại bỏ Data URI\n    );\n  };\n\n  if (Array.isArray(images)) {\n    const filtered = images.filter(isValidUrl);\n    if (filtered.length === 0) return false;\n\n    item.json.image = filtered; // Giữ lại mảng image đã lọc\n    return true;\n  }\n\n  if (typeof images === 'string') {\n    return isValidUrl(images);\n  }\n\n  return false;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        60
+      ],
+      "id": "620aec25-1aae-4cd7-b11a-270c593ecd8d",
+      "name": "Filter Image"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c9b2029c-7f54-449d-b738-59767648de39",
+              "leftValue": "={{ $json.image }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -80,
+        40
+      ],
+      "id": "a79aa03d-8e58-482a-88cc-e787d027cdb2",
+      "name": "Empty Array"
+    },
+    {
+      "parameters": {
+        "jsCode": "const domain = $('Loop Over Items').item?.json?.domain || 'Unknown';\nconst seen = new Set();\nconst results = [];\n\nfor (const item of items) {\n  const error = item.json?.error;\n  const statusCode = item.json?.error?.code || 'Unknown';\n  const images = item.json?.image || [];\n\n  for (const url of Array.isArray(images) ? images : [images]) {\n    if (url && error && !seen.has(url)) {\n      seen.add(url);\n      results.push(`🔗 ${url} (Error: ${statusCode})`);\n    }\n  }\n}\n\nreturn [{\n  json: {\n    content: results.length\n      ? `🚨Domain Error: ${domain}\\n${results.slice(0, 50).join('\\n')}`\n      : '',\n  },\n}];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -40
+      ],
+      "id": "96065794-6111-4b79-988c-6541c68f31b3",
+      "name": "Merge Notifications"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Sub Domain Loop ": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Sub Domain": {
+      "main": [
+        [
+          {
+            "node": "Extract ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Status SubDomain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check IMAGES": {
+      "main": [
+        [
+          {
+            "node": "Sub Domain Loop ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge Notifications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Images, IFrame": {
+      "main": [
+        [
+          {
+            "node": "Sub Domain Loop ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Fetch Sub Domain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Filter Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract ": {
+      "main": [
+        [
+          {
+            "node": "Empty Array",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Check IMAGES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Image": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Empty Array": {
+      "main": [
+        [
+          {
+            "node": "Sub Domain Loop ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Notifications": {
+      "main": [
+        [
+          {
+            "node": "Log Images, IFrame",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "82f9b3bd-ed25-4935-92e0-733878a8f8b6",
+  "meta": {
+    "instanceId": "da33118653b457a38767846f003a1ddd3b6e88f9568f32164fe696d219064bab"
+  },
+  "id": "PINLwX6Bv4Uz5Zut",
+  "tags": []
+}
