@@ -1,0 +1,1254 @@
+{
+  "name": "Orchestrator",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ $('Extract Main Domains').item.json.domain + 'sitemap.xml' }}",
+        "allowUnauthorizedCerts": true,
+        "responseFormat": "string",
+        "options": {
+          "fullResponse": false,
+          "followAllRedirects": true,
+          "followRedirect": false
+        }
+      },
+      "id": "c4277592-445c-4b31-984f-a0f8c016f482",
+      "name": "Get Sitemap XML",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1780,
+        360
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => ({\n  json: {\n    domain: item.json['Domain '],\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2180,
+        380
+      ],
+      "id": "25652260-ebf5-43af-8ec1-220514dd668a",
+      "name": "Extract Main Domains"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.subpage }}",
+        "allowUnauthorizedCerts": true,
+        "responseFormat": "string",
+        "options": {
+          "fullResponse": false
+        }
+      },
+      "id": "614dcc2b-aab6-4b21-9a6b-ba259a48b5ee",
+      "name": "Get SubSitemap XML",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -1320,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const xml = item.json.body || item.json.data || '';\n  \n  if (typeof xml !== 'string') {\n    continue; // hoặc throw nếu bạn muốn dừng hẳn\n  }\n\n  const urls = [...xml.matchAll(/<loc>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?<\\/loc>/g)].map(match => match[1]);\n\n  for (const url of urls) {\n    results.push({\n      json: {\n        subpage: url,\n      }\n    });\n  }\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1500,
+        240
+      ],
+      "id": "5f8fcaad-ba24-4475-a8ef-b640c275130b",
+      "name": "Extract to SubSitemap"
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "={{$json.domain}}",
+        "allowUnauthorizedCerts": true,
+        "responseFormat": "string",
+        "options": {
+          "fullResponse": false,
+          "followAllRedirects": true,
+          "followRedirect": false,
+          "ignoreResponseCode": false,
+          "useQueryString": false
+        }
+      },
+      "name": "Fetch Main Domain",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        -2020,
+        380
+      ],
+      "id": "16f85e5d-e176-41bf-b8cb-9a71d6765e5e",
+      "retryOnFail": true,
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=Domain: {{ $json.domain }}\nStatus: {{ $json.error.status }}\nLog: {{ $json.error.code }}\n////////////////////////////////",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -1880,
+        540
+      ],
+      "id": "fe6384aa-39cb-4d53-9a1c-af0c4bbc3fc0",
+      "name": "Log Status SubDomain",
+      "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "ijERmmgaOVpveUgv",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1gTueOAEUnMkDds2fAxPGd09oPmKyQx53yRR5gEndwkE/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1gTueOAEUnMkDds2fAxPGd09oPmKyQx53yRR5gEndwkE/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        -2380,
+        380
+      ],
+      "id": "d4d91fb3-cff9-40fb-954f-d0371c268a1d",
+      "name": "List Domains1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "999rVWVTeL3MAbrk",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const xml = item.json.body || item.json.data || '';\n\n  if (typeof xml !== 'string') {\n    throw new Error('Sitemap XML is not a valid string');\n  }\n\n  const matches = [...xml.matchAll(/<loc>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?<\\/loc>/g)];\n  const urls = matches.map(match => match[1]);\n\n  for (const domain of urls) {\n    results.push({ json: { domain } });\n  }\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1140,
+        240
+      ],
+      "id": "80609465-b275-4093-b923-c251cd2a27eb",
+      "name": "All URL"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        -980,
+        240
+      ],
+      "id": "e6045e82-296d-4ed2-a370-c24f8585688f",
+      "name": "Remove Duplicates1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map((item, index) => {\n  item.json._index = index;\n  return item;\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -760,
+        240
+      ],
+      "id": "44b8d328-1c3a-4aba-bea1-77b2c40a06fa",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "hcJQMqGvYvnoI9DD",
+          "mode": "list",
+          "cachedResultName": "Scan From 0"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -100,
+        0
+      ],
+      "id": "abf75e5f-c01f-4453-8b6d-f26561b5d9c3",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "triggerTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 3
+            }
+          ]
+        }
+      },
+      "name": "Cron1",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        -2600,
+        380
+      ],
+      "id": "c280a3c7-e6c8-4fbc-956d-a75a92e0cace"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "PINLwX6Bv4Uz5Zut",
+          "mode": "list",
+          "cachedResultName": "Scan from 500"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -100,
+        140
+      ],
+      "id": "6724647a-80eb-498b-9613-9fb7f7ef3ef0",
+      "name": "Execute Workflow1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "STkC6CK7ecSuCBg3",
+          "mode": "list",
+          "cachedResultName": "Scan From 1000"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -100,
+        280
+      ],
+      "id": "ed6a011c-d971-4673-8c57-0d19e18f7fca",
+      "name": "Execute Workflow2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Cp8f1sD0jCq0eCUH",
+          "mode": "list",
+          "cachedResultName": "Scan from 1500"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -100,
+        460
+      ],
+      "id": "7ee781c6-6dbf-4375-81a6-64a3d756b79a",
+      "name": "Execute Workflow3"
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=Domain: {{ $('Extract Main Domains').item.json.domain }}/sitemap.xml\nError Code: {{ $json.error.code }}\nError Status: {{ $json.error.status }}\n!!! Please check sitemap of your domain\n/////////////////////////////////////",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        -1640,
+        540
+      ],
+      "id": "3f27f985-b3a1-49f9-b16f-5ac09e0b27b9",
+      "name": "Log Status",
+      "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "ijERmmgaOVpveUgv",
+          "name": "Discord Webhook account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 1500,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "b63c624e-0707-4560-8306-6aca99235636",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 1999,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -340,
+        480
+      ],
+      "id": "0e2ab312-b5ec-434d-b4bd-3967a4819a5b",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 1000,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "bbd5729a-3cad-4338-bef0-8991f1c2fb73",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 1499,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -340,
+        300
+      ],
+      "id": "e32a2c43-c8d0-403e-ae51-58fafa723844",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 500,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "6dd6e433-7f83-49b9-b6e3-167d39bb9102",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 999,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -340,
+        160
+      ],
+      "id": "fcc38df7-fc08-446c-aed5-a42c8ba36c15",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 499,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -340,
+        20
+      ],
+      "id": "9ced3fba-faf3-4b29-8fed-1a954fe7e637",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "batchSize": 500,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -640,
+        500
+      ],
+      "id": "3e2ccfb6-2b17-4699-a640-62cd01b9aa7a",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        380,
+        500
+      ],
+      "id": "cb5d76c8-a2f4-4abb-b9c2-5b23ab2e302a"
+    },
+    {
+      "parameters": {
+        "content": "# 2. Take and Split Domains\n\n## - Take Lists Domain from GG Sheet \n\n## - Parse list Domains to code\n",
+        "height": 500,
+        "width": 360,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2400,
+        80
+      ],
+      "id": "4bec6082-642b-4461-99b0-3a5d852c88d6",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "# 3. Checking Site Status and XML \n\n## - Fetch HTML and get Status, also get XML file \n\n## - If Error(404) -> Notification on Status channel \n\n## - If Success -> Go to next Step",
+        "height": 700,
+        "width": 500,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2040,
+        -20
+      ],
+      "id": "cb67ecf3-930e-47f3-a5bd-ba2034834ca9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# 1. Cron Jobs \n\n## - Schedule to scan WordPress site",
+        "height": 320,
+        "width": 280
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2680,
+        220
+      ],
+      "id": "1d7a6bd6-db31-41d1-a2a2-57296c65a314",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# 4. Get sub url\n\n## - Parse code to extract all subsitemap\n\n## - Get all URL by HTTP Request \n\n## - Parse Code again to take URL only",
+        "height": 520,
+        "width": 520,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1560,
+        -60
+      ],
+      "id": "aabb173e-783f-46e5-92ee-b3113997601c",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# 5. Remove Duplicates and Mark index \n\n## - Remove duplicates domain\n\n## - Set index for each item to split into workflow",
+        "height": 440,
+        "width": 420,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1040,
+        -40
+      ],
+      "id": "f9ebd888-20f5-4946-a8f1-e811edf3aee5",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "# 6. Split Items to each Workflow\n\n## - Split 500-1000 items to each Workflow \n\n## - Using IF node like a batches to transfer data to Workflow\n\n## - Node Execute Workflow to call trigger",
+        "height": 1560,
+        "width": 1260,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -280
+      ],
+      "id": "bf7abd04-6edb-4ee6-a8cf-26fe2743e890",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "i2mexL3LzZuuqXZ9",
+          "mode": "list",
+          "cachedResultName": "Scan from 2000"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        660
+      ],
+      "id": "8986a123-ef54-4098-9ad2-3c5e15fe6f27",
+      "name": "Execute Workflow4"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "wlYTArm4XYLxfZ4G",
+          "mode": "list",
+          "cachedResultName": "Scan from 2500"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        800
+      ],
+      "id": "16ede883-188f-4f06-bc62-38202cd1420c",
+      "name": "Execute Workflow5"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "A9R9OpxPB6TXyog1",
+          "mode": "list",
+          "cachedResultName": "Scan from 3000"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        940
+      ],
+      "id": "130b2011-dee3-477f-8242-1ede0f4b5e40",
+      "name": "Execute Workflow6"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "PGb6gM17F0BsKags",
+          "mode": "list",
+          "cachedResultName": "Scan from 3500"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        1120
+      ],
+      "id": "b71e4b97-dc3e-4d68-987c-315d81a08e11",
+      "name": "Execute Workflow7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 3500,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        1140
+      ],
+      "id": "45569588-e7d2-498e-be25-80a14caf43e8",
+      "name": "If4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 3000,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "bbd5729a-3cad-4338-bef0-8991f1c2fb73",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 3499,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        960
+      ],
+      "id": "4aecd7e9-5353-4997-9e8a-f45d5f91970a",
+      "name": "If5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 2500,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "6dd6e433-7f83-49b9-b6e3-167d39bb9102",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 2999,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        820
+      ],
+      "id": "89fee143-a5c3-4553-ae8f-9b8152b55243",
+      "name": "If6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 2000,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "8271a7a8-4bbd-42a7-a798-1cb122af692e",
+              "leftValue": "={{ $json._index }}",
+              "rightValue": 2499,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        680
+      ],
+      "id": "0aa1ddab-cc46-4162-ba25-4d01c0192e7b",
+      "name": "If7"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get Sitemap XML": {
+      "main": [
+        [
+          {
+            "node": "Extract to SubSitemap",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Main Domains": {
+      "main": [
+        [
+          {
+            "node": "Fetch Main Domain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get SubSitemap XML": {
+      "main": [
+        [
+          {
+            "node": "All URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract to SubSitemap": {
+      "main": [
+        [
+          {
+            "node": "Get SubSitemap XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Main Domain": {
+      "main": [
+        [
+          {
+            "node": "Get Sitemap XML",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Status SubDomain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Domains1": {
+      "main": [
+        [
+          {
+            "node": "Extract Main Domains",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "All URL": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron1": {
+      "main": [
+        [
+          {
+            "node": "List Domains1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If7",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow1": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow2": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow3": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If4": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If7": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow4": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow5": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow6": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow7": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "703047ae-60e0-44c5-83dd-65f601d3eb6c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "da33118653b457a38767846f003a1ddd3b6e88f9568f32164fe696d219064bab"
+  },
+  "id": "ySNnYcUFePzs1yWC",
+  "tags": []
+}
