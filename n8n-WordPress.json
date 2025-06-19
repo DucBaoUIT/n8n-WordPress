@@ -3,11 +3,11 @@
   "nodes": [
     {
       "parameters": {
-        "url": "={{ $('Extract Main Domains').item.json.domain + '/sitemap.xml' }}",
+        "url": "={{ $('Extract Main Domains').item.json.domain + 'sitemap.xml' }}",
         "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
-          "fullResponse": true,
+          "fullResponse": false,
           "followAllRedirects": true,
           "followRedirect": false
         }
@@ -41,7 +41,7 @@
         "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
-          "fullResponse": true
+          "fullResponse": false
         }
       },
       "id": "209e4d68-6cdf-4fcd-9630-c6c0ce99a27a",
@@ -65,19 +65,6 @@
       ],
       "id": "45831038-4a3c-409b-b0ab-ae5d7c5bfb8f",
       "name": "Extract to SubSitemap"
-    },
-    {
-      "parameters": {
-        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const xml = item.json.body || item.json.data || '';\n\n  if (typeof xml !== 'string') {\n    throw new Error('Sitemap XML is not a valid string');\n  }\n\n  const matches = [...xml.matchAll(/<loc>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?<\\/loc>/g)];\n  const urls = matches.map(match => match[1]);\n\n  for (const domain of urls) {\n    results.push({ json: { domain } });\n  }\n}\n\nreturn results;\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -1540,
-        620
-      ],
-      "id": "f848e77c-22d2-4b43-ae6f-11e84203f686",
-      "name": "All URL"
     },
     {
       "parameters": {
@@ -128,7 +115,7 @@
         "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
-          "fullResponse": true,
+          "fullResponse": false,
           "followAllRedirects": true,
           "followRedirect": false,
           "ignoreResponseCode": false,
@@ -153,8 +140,8 @@
       "name": "Sub Domain Loop ",
       "typeVersion": 1,
       "position": [
-        500,
-        860
+        620,
+        880
       ],
       "id": "d1e4fc9f-de36-4855-a1f2-047b44620556"
     },
@@ -165,7 +152,7 @@
         "allowUnauthorizedCerts": true,
         "responseFormat": "string",
         "options": {
-          "fullResponse": true,
+          "fullResponse": false,
           "followAllRedirects": true,
           "followRedirect": false,
           "ignoreResponseCode": false
@@ -175,8 +162,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -1160,
-        460
+        -1020,
+        480
       ],
       "id": "5d10b939-a871-4346-8c39-477bd784e40c",
       "onError": "continueErrorOutput"
@@ -189,7 +176,7 @@
         "responseFormat": "string",
         "options": {
           "batchInterval": 1000,
-          "fullResponse": true,
+          "fullResponse": false,
           "followAllRedirects": true,
           "followRedirect": false
         }
@@ -198,8 +185,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 1,
       "position": [
-        -220,
-        340
+        60,
+        360
       ],
       "id": "99b323e4-f0ba-4d65-aeb2-50d4188e2772",
       "onError": "continueErrorOutput"
@@ -207,7 +194,7 @@
     {
       "parameters": {
         "authentication": "webhook",
-        "content": "={{ $json.content }}\n--------------------------------------------------------",
+        "content": "={{ $json.content }}\n------------------",
         "options": {
           "wait": false
         }
@@ -215,8 +202,8 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        380,
-        280
+        480,
+        380
       ],
       "id": "c5fdc667-88b7-4360-9063-ca826ee7a1cf",
       "name": "Log Images, IFrame",
@@ -232,27 +219,6 @@
     },
     {
       "parameters": {
-        "requestMethod": "HEAD",
-        "url": "={{ $json.iframe }}",
-        "allowUnauthorizedCerts": true,
-        "responseFormat": "string",
-        "options": {
-          "fullResponse": true,
-          "followRedirect": true
-        }
-      },
-      "name": "Check IFRAMES",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 1,
-      "position": [
-        -240,
-        560
-      ],
-      "id": "f4ef9916-eb45-4ca3-b50b-a2babd313eaa",
-      "onError": "continueErrorOutput"
-    },
-    {
-      "parameters": {
         "authentication": "webhook",
         "content": "=Domain: {{ $json.domain }}\nStatus: {{ $json.error.status }}\nLog: {{ $json.error.code }}\n////////////////////////////////",
         "options": {}
@@ -260,17 +226,23 @@
       "type": "n8n-nodes-base.discord",
       "typeVersion": 2,
       "position": [
-        -860,
+        -780,
         780
       ],
       "id": "a0df5883-96ca-4f8d-b8d5-210efd7f1770",
       "name": "Log Status SubDomain",
-      "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22"
+      "webhookId": "2fa98cec-4155-42b7-98ff-f76b5dadba22",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "ijERmmgaOVpveUgv",
+          "name": "Discord Webhook account"
+        }
+      }
     },
     {
       "parameters": {
         "content": "# Additional \n\n## - This is notification for web status and XML Site",
-        "height": 200,
+        "height": 260,
         "width": 440,
         "color": 7
       },
@@ -278,7 +250,7 @@
       "typeVersion": 1,
       "position": [
         -1960,
-        900
+        920
       ],
       "id": "9712fc0b-b1ae-44aa-abc4-54071994df58",
       "name": "Sticky Note6"
@@ -333,7 +305,7 @@
     {
       "parameters": {
         "content": "# 5. Extract Images and IFrames \n\n## - Extract All Images and IFrames on Website into array \n\n## - Checking if both Array empty (Website default or only text), go to \"true\" branches -> Check the next website\n\n## - If Array not empty  -> Split Images and IFrames -> Check images and iframes",
-        "height": 680,
+        "height": 580,
         "width": 1140,
         "color": 4
       },
@@ -341,7 +313,7 @@
       "typeVersion": 1,
       "position": [
         -1400,
-        60
+        160
       ],
       "id": "4d56309e-1ad8-4c3b-b4b1-6fc6f9849e00",
       "name": "Sticky Note4"
@@ -349,15 +321,15 @@
     {
       "parameters": {
         "content": "# 6. Notifications \n\n## - After Check by HTTP Request. If there is no error from both Images and IFrame - go to \"true\" branches to run the next domain.\n\n## - If there is an error -> Notify to Discord Channel Images IFrame.\n",
-        "height": 740,
-        "width": 660,
+        "height": 620,
+        "width": 880,
         "color": 5
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -240,
-        0
+        -260,
+        120
       ],
       "id": "4792d952-8728-4ad7-8263-67d7f602e224",
       "name": "Sticky Note5"
@@ -388,8 +360,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        280,
-        740
+        480,
+        720
       ],
       "id": "81a72cac-7b34-4c0f-b9e3-d0d4273d8dfd",
       "name": "Sticky Note7"
@@ -425,17 +397,122 @@
     },
     {
       "parameters": {
-        "batchSize": 50,
+        "batchSize": 20,
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -1360,
+        -1180,
         620
       ],
       "id": "23f5c0a7-a0a1-442f-9ba5-52b6dee4eaab",
       "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "image",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -460,
+        440
+      ],
+      "id": "0a02f710-4440-4219-9b2c-ab5b933f70aa",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "image",
+              "cssSelector": "img",
+              "returnValue": "attribute",
+              "attribute": "src",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        -760,
+        460
+      ],
+      "id": "51114416-da28-489e-8f4b-c5d2735ae768",
+      "name": "Extract "
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -3100,
+        420
+      ],
+      "id": "f7f22460-ef54-4d2c-ba07-b7cce3ba938e",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "const results = [];\n\nfor (const item of items) {\n  const xml = item.json.body || item.json.data || '';\n\n  if (typeof xml !== 'string') {\n    throw new Error('Sitemap XML is not a valid string');\n  }\n\n  const matches = [...xml.matchAll(/<loc>(?:<!\\[CDATA\\[)?(.*?)(?:\\]\\]>)?<\\/loc>/g)];\n  const urls = matches.map(match => match[1]);\n\n  for (const domain of urls) {\n    results.push({ json: { domain } });\n  }\n}\n\nreturn results;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1540,
+        620
+      ],
+      "id": "f848e77c-22d2-4b43-ae6f-11e84203f686",
+      "name": "All URL"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        -120,
+        540
+      ],
+      "id": "31efd8b5-bde3-4e6b-a1a1-40b6979bc788",
+      "name": "Remove Duplicates",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.removeDuplicates",
+      "typeVersion": 2,
+      "position": [
+        -1380,
+        620
+      ],
+      "id": "f31f84a6-fe97-4211-89f2-0fb16329343d",
+      "name": "Remove Duplicates1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.filter(item => item.json.image !== undefined);\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -280,
+        440
+      ],
+      "id": "634b2073-1c9e-442f-bfd2-c6f84ffc2c4e",
+      "name": "Code"
     },
     {
       "parameters": {
@@ -448,18 +525,8 @@
           },
           "conditions": [
             {
-              "id": "738330fd-6b40-43b5-8ea1-a64ef4ec6f78",
+              "id": "c9b2029c-7f54-449d-b738-59767648de39",
               "leftValue": "={{ $json.image }}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "empty",
-                "singleValue": true
-              }
-            },
-            {
-              "id": "de5bd2f8-a3da-4b6b-892b-8e65c29f3b7e",
-              "leftValue": "={{ $json.iframe }}",
               "rightValue": "",
               "operator": {
                 "type": "array",
@@ -476,120 +543,23 @@
       "typeVersion": 2.2,
       "position": [
         -600,
-        440
+        640
       ],
-      "id": "13a435e6-e705-495c-a963-c2d23651f9d8",
-      "name": "Empty Array1"
+      "id": "eb13b3a5-60c2-4039-a748-e14a5117122e",
+      "name": "If"
     },
     {
       "parameters": {
-        "fieldToSplitOut": "image",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
-      "position": [
-        -400,
-        340
-      ],
-      "id": "0a02f710-4440-4219-9b2c-ab5b933f70aa",
-      "name": "Split Out"
-    },
-    {
-      "parameters": {
-        "fieldToSplitOut": "iframe",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitOut",
-      "typeVersion": 1,
-      "position": [
-        -400,
-        560
-      ],
-      "id": "a394af02-fb34-4448-a04c-ea461de3bb86",
-      "name": "Split Out1"
-    },
-    {
-      "parameters": {
-        "jsCode": "return items.map(item => {\n  const images = item.json.image || [];\n\n  const filtered = images\n    .filter(src => typeof src === 'string' && !src.startsWith('data:')) // loại bỏ base64\n    .map(src => {\n      if (src.startsWith('//')) {\n        return 'https:' + src;\n      }\n      if (!src.startsWith('http')) {\n        return 'https://' + src;\n      }\n      return src;\n    });\n\n  return {\n    json: {\n      ...item.json,\n      image: filtered,\n    },\n  };\n});\n"
+        "jsCode": "const domain = $('Loop Over Items').item?.json?.domain || 'Unknown';\nconst seen = new Set();\nconst results = [];\n\nfor (const item of items) {\n  const error = item.json?.error;\n  const statusCode = item.json?.error?.code || 'Unknown';\n  const images = item.json?.image || [];\n\n  for (const url of Array.isArray(images) ? images : [images]) {\n    if (url && error && !seen.has(url)) {\n      seen.add(url);\n      results.push(`🔗 ${url} (Error: ${statusCode})`);\n    }\n  }\n}\n\nreturn [{\n  json: {\n    content: results.length\n      ? `🚨Domain Error: ${domain}\\n${results.slice(0, 50).join('\\n')}`\n      : '',\n  },\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -760,
-        440
+        300,
+        380
       ],
-      "id": "80b4cbe6-621a-4f8d-9432-80dd12521032",
-      "name": "Code"
-    },
-    {
-      "parameters": {
-        "operation": "extractHtmlContent",
-        "extractionValues": {
-          "values": [
-            {
-              "key": "image",
-              "cssSelector": "img",
-              "returnValue": "attribute",
-              "attribute": "src",
-              "returnArray": true
-            },
-            {
-              "key": "iframe",
-              "cssSelector": "iframe",
-              "returnValue": "attribute",
-              "attribute": "src",
-              "returnArray": true
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.html",
-      "typeVersion": 1.2,
-      "position": [
-        -920,
-        440
-      ],
-      "id": "51114416-da28-489e-8f4b-c5d2735ae768",
-      "name": "Extract "
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.1,
-      "position": [
-        80,
-        280
-      ],
-      "id": "602a8453-ddb6-4fc3-85c9-3c209471b1df",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "jsCode": "const domain = $('Loop Over Items').item.json.domain || 'Unknown';\nconst seen = new Set();\nconst results = [];\n\nfor (const item of items) {\n  const error = item.json.error;\n  const image = item.json.image;\n  const iframe = item.json.iframe;\n\n  if (!error) continue;\n\n  const urls = [];\n\n  // Đảm bảo đưa cả image và iframe vào nếu có\n  if (Array.isArray(image)) urls.push(...image);\n  else if (image) urls.push(image);\n\n  if (Array.isArray(iframe)) urls.push(...iframe);\n  else if (iframe) urls.push(iframe);\n\n  for (const url of urls) {\n    if (!url || seen.has(url)) continue;\n    seen.add(url);\n\n    const code = error.code || 'Unknown';\n    const status = error.status || 'Unknown';\n\n    results.push(`❌ Error\\n🔗 URL: ${url}\\n💥 Code: ${code}\\n📶 Status: ${status}`);\n  }\n}\n\nreturn [{\n  json: {\n    content: results.length > 0\n      ? `🚨 Error Report for: ${domain}\\n\\n${results.join('\\n\\n')}`\n      : '',\n  },\n}];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        240,
-        280
-      ],
-      "id": "5db147bb-93aa-41c5-b2d1-c9a260ec1126",
+      "id": "6bc264e5-07cb-41df-90f5-e52989e42362",
       "name": "Code1"
-    },
-    {
-      "parameters": {
-        "inputSource": "passthrough"
-      },
-      "type": "n8n-nodes-base.executeWorkflowTrigger",
-      "typeVersion": 1.1,
-      "position": [
-        -3100,
-        420
-      ],
-      "id": "f7f22460-ef54-4d2c-ba07-b7cce3ba938e",
-      "name": "When Executed by Another Workflow"
     }
   ],
   "pinData": {},
@@ -645,26 +615,9 @@
         ]
       ]
     },
-    "All URL": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Log Status": {
       "main": [
-        [
-          {
-            "node": "Sub Domain Loop ",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Cron1": {
@@ -736,7 +689,7 @@
         ],
         [
           {
-            "node": "Merge",
+            "node": "Code1",
             "type": "main",
             "index": 0
           }
@@ -750,24 +703,6 @@
             "node": "Sub Domain Loop ",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Check IFRAMES": {
-      "main": [
-        [
-          {
-            "node": "Sub Domain Loop ",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -795,63 +730,7 @@
         ]
       ]
     },
-    "Empty Array1": {
-      "main": [
-        [
-          {
-            "node": "Sub Domain Loop ",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Split Out",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Split Out1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Split Out": {
-      "main": [
-        [
-          {
-            "node": "Check IMAGES",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Split Out1": {
-      "main": [
-        [
-          {
-            "node": "Check IFRAMES",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "Empty Array1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract ": {
       "main": [
         [
           {
@@ -862,22 +741,11 @@
         ]
       ]
     },
-    "Merge": {
+    "Extract ": {
       "main": [
         [
           {
-            "node": "Code1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code1": {
-      "main": [
-        [
-          {
-            "node": "Log Images, IFrame",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -894,14 +762,88 @@
           }
         ]
       ]
+    },
+    "All URL": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates": {
+      "main": [
+        [
+          {
+            "node": "Check IMAGES",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Remove Duplicates1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Remove Duplicates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Sub Domain Loop ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Log Images, IFrame",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "32c1a97c-5a5a-4f9d-a010-3960ddc6273e",
+  "versionId": "aea06e16-e37f-4ff1-b139-1a2f190647b7",
   "meta": {
+    "templateCredsSetupCompleted": true,
     "instanceId": "da33118653b457a38767846f003a1ddd3b6e88f9568f32164fe696d219064bab"
   },
   "id": "ySNnYcUFePzs1yWC",
