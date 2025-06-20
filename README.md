@@ -10,7 +10,7 @@ n8n là một nền tảng tự động hóa quy trình làm việc mã nguồn 
 
 ### Mô hình tổng quan 
 
-![image](https://github.com/user-attachments/assets/a105a717-5bd7-4d38-90fb-984bfdd4e1eb)
+![image](https://github.com/user-attachments/assets/4e9fed28-4f49-4b4c-98c5-7dfa33da9cf4)
 
 ### 1. Lên lịch để kiểm tra website
 
@@ -57,7 +57,7 @@ Sau đó, thực hiện parse dữ liệu text này để sử dụng cho node s
 ```
 return items.map(item => ({
   json: {
-    domain: item.json['Domain '],
+    domain: item.json['Domain'],
   }
 }));
 ```
@@ -235,7 +235,7 @@ return items.map((item, index) => {
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/e5d17d08-3363-4489-87bb-17d5b4abdd2c)
+![image](https://github.com/user-attachments/assets/f54e15a2-eb80-487b-8247-c5c129e69c1d)
 
 </div>
 
@@ -245,27 +245,15 @@ return items.map((item, index) => {
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/edc640e6-2ebf-4936-8ff8-5a4da7781757)
+![image](https://github.com/user-attachments/assets/7cc9f953-8ca9-44f8-a585-bebcf6c021f5)
 
 </div>
 
-#### Node 2 - 3 - 4 - 5: IF - Sử dụng node này đặt điều kiện dựa trên index để đưa dữ liệu phù hợp vào các Workflow
+#### Node 2 - 3 - 4 - 5 - 7 - 8: IF - Sử dụng node này đặt điều kiện dựa trên index để đưa dữ liệu phù hợp vào các Workflow
 
-Tại mỗi node IF, đặt điều kiện sao cho tổng số index là 1000 tương ứng với 1000 index đi vào đúng Workflow thích hợp (1000 Domain đầu tiên vào Workflow 1, và cứ thế tiếp diễn). Workflow 4 sẽ là Workflow chịu trách nhiệm quét tất cả các domain cuối cùng.
+Tại mỗi node IF, đặt điều kiện sao cho tổng số index là 800 tương ứng với 800 index đi vào đúng Workflow thích hợp (800 Domain đầu tiên vào Workflow 1, và cứ thế tiếp diễn). Workflow cuối sẽ là Workflow chịu trách nhiệm quét tất cả các domain cuối cùng.
 
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/7417885c-3e1e-4a8a-9874-6f9df785f4b8)
-
-![image](https://github.com/user-attachments/assets/ce12dcb6-2518-4144-a9af-0e15d39f62d3)
-
-![image](https://github.com/user-attachments/assets/15a06b74-c39e-4200-9a36-d5af951cc713)
-
-![image](https://github.com/user-attachments/assets/a47d37ca-feee-40a8-90e6-638fa2783cdb)
-
-</div>
-
-#### Node 6 - 7 - 8 - 9: Execute Workflow - Sử dụng node này để gọi các Workflow khác hoạt động 
+#### Node 9 - 10 - 11 - 12 - 13 - 14 - 15: Execute Workflow - Sử dụng node này để gọi các Workflow khác hoạt động 
 
 Cài dặt Node Excute Workflow như sau để gọi các Workflow khác. Lưu ý
 
@@ -273,23 +261,29 @@ Cài dặt Node Excute Workflow như sau để gọi các Workflow khác. Lưu �
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/a6351522-8928-4a60-9952-da19857e1d1f)
+![image](https://github.com/user-attachments/assets/e10fbbef-36a8-4ddd-bcad-ab0ace1f4674)
 
-![image](https://github.com/user-attachments/assets/79193039-d0f5-4eef-9c6e-c515aa4fb4dc)
+![image](https://github.com/user-attachments/assets/4711c2aa-5e15-4c95-b60c-80262ae0af5b)
 
-![image](https://github.com/user-attachments/assets/e2aaf745-c8ef-4119-9bdf-6ef87389cdcc)
+![image](https://github.com/user-attachments/assets/d6ec0cc3-1684-453d-8e61-bdaebdd782a4)
 
-![image](https://github.com/user-attachments/assets/09f1396f-97b0-441f-8fe5-f163220a5e02)
+![image](https://github.com/user-attachments/assets/83640761-d20b-4f16-a18d-3b1b1d0a3dfd)
+
+![image](https://github.com/user-attachments/assets/8b2e24be-c115-4f08-96e1-7838102b33fd)
+
+![image](https://github.com/user-attachments/assets/37babd6e-8906-4c8f-aafd-19065b712ed7)
+
+![image](https://github.com/user-attachments/assets/ac5e1319-44f1-4650-a50a-ccb982d976b1)
 
 </div>
 
-## B. Workflow thực thi phân tích hình ảnh (Cả 4 Workflow đều giống nhau)
+## B. Workflow thực thi phân tích hình ảnh (Tất cả Workflow thực thi đều giống nhau)
 
 ### Mô hình tổng quan 
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/63595904-f123-4c7d-8246-500ea86a3112)
+![image](https://github.com/user-attachments/assets/f8e2c6ed-4a4a-44f8-84e1-718037ad351f)
 
 </div>
 
@@ -299,7 +293,7 @@ Cài dặt Node Excute Workflow như sau để gọi các Workflow khác. Lưu �
 
 <div align="center">
 
-![image](https://github.com/user-attachments/assets/8aa51a78-e2e4-4752-a6fc-cf5f105427fb)
+![image](https://github.com/user-attachments/assets/0795a810-cbbc-475e-8fe5-5f6ceda6de1f)
 
 </div>
 
@@ -336,7 +330,30 @@ Có thể tắt Full Response nếu muốn tránh dữ liệu quá nặng
 
 </div>
 
-#### Node 4: Discord - Gửi thông báo nếu Node 2 có website lỗi 
+#### Node 4: Extract HTML - Dùng node này để lấy data images và iframes 
+
+<div align="center">
+  
+![image](https://github.com/user-attachments/assets/9f3560f5-26b4-409d-8fd0-c90a2976c353)
+
+</div>
+
+#### Node 5: Code -  Gán lại Domain cho các images iframes
+
+Sử dụng code JavaScript để gán lại domain cho các images iframe sau khi extract 
+
+```
+return items.map(item => {
+  return {
+    json: {
+      ...item.json,
+      domain: item.json.domain || $('Loop Over Items').item?.json?.domain || 'Unknown'
+    }
+  };
+});
+```
+
+#### Node 6: Discord - Gửi thông báo nếu Node 2 có website lỗi 
 
 Tại Message của Node Discord, cấu hình như sau. Lưu ý
 
@@ -431,6 +448,57 @@ Mục đích của việc loại bỏ trên để giảm thiểu lượng dữ l
 
 </div>
 
+### Nhánh IFrames
+
+#### Node 5: IF - Lọc các mảng IFrame trống
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/f0133fd6-6e0e-4860-aa70-a730c9a06f4f)
+
+</div>
+
+#### Node 6: Split - Tách giá trị IFrame ra khỏi mảng 
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/f6b08b82-6006-4225-922f-15ca9580cb68)
+
+</div>
+
+#### Node 7: Code - Lọc các giá trị Null, không xác định. Thực hiện code JavaScript sau 
+
+```
+return items.filter(item => {
+  const iframe = item.json.iframe;
+
+  if (typeof iframe !== 'string') return false;
+  if (iframe.trim() === '') return false;
+
+  return true;
+});
+```
+
+#### Node 8: Remove Duplicates - Loại bỏ các giá trị IFrame trùng
+
+Giá trị cấu hình giống node Remove Duplicates của Images
+
+Thêm 1 node HTTP Request: Để kiểm tra IFrames
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/8d8ad357-ebd3-4fa9-837c-40b8c7b0d6b1)
+
+</div>
+
+#### Node 9: Merge - Để gộp lỗi Images, IFrames của 1 trang web. 
+
+<div align="center">
+
+![image](https://github.com/user-attachments/assets/4891825e-fc93-45b6-87ea-22de4628211f)
+
+</div>
+
 ### 3. Kiểm tra hình ảnh và thông báo 
 
 #### Hình ảnh tổng quan 
@@ -456,30 +524,57 @@ Node này chỉ cần các giá trị trường HEAD để lấy được status
 Thực hiện code JavaScript sau để gộp các lỗi lại
 
 ```
-const domain = $('Loop Over Items').item?.json?.domain || 'Unknown';
+const domainErrorsMap = {}; // Map: domain => list of errors
 const seen = new Set();
-const results = [];
 
 for (const item of items) {
   const error = item.json?.error;
   const statusCode = item.json?.error?.code || 'Unknown';
-  const images = item.json?.image || [];
+  const domain = item.json?.domain || 'Unknown';
 
-  for (const url of Array.isArray(images) ? images : [images]) {
-    if (url && error && !seen.has(url)) {
-      seen.add(url);
-      results.push(`🔗URL: ${url} (💥Error: ${statusCode})`);
+  const images = item.json?.image || [];
+  const iframes = item.json?.iframe || [];
+
+  const imageList = Array.isArray(images) ? images : [images];
+  const iframeList = Array.isArray(iframes) ? iframes : [iframes];
+
+  for (const url of imageList) {
+    const key = `image:${url}`;
+    if (url && error && !seen.has(key)) {
+      seen.add(key);
+      if (!domainErrorsMap[domain]) domainErrorsMap[domain] = [];
+      domainErrorsMap[domain].push(`🖼️ Image: ${url} (Error: ${statusCode})`);
+    }
+  }
+
+  for (const url of iframeList) {
+    const key = `iframe:${url}`;
+    if (url && error && !seen.has(key)) {
+      seen.add(key);
+      if (!domainErrorsMap[domain]) domainErrorsMap[domain] = [];
+      domainErrorsMap[domain].push(`🧩 Iframe: ${url} (Error: ${statusCode})`);
     }
   }
 }
 
-return [{
-  json: {
-    content: results.length
-      ? `🚨Domain Error: ${domain}\n\n${results.slice(0, 50).join('\n')}`
-      : '',
-  },
-}];
+// Trả về thông báo cho từng domain, chia nhỏ nếu lỗi quá nhiều
+const batchSize = 10;
+const messages = [];
+
+for (const [domain, errors] of Object.entries(domainErrorsMap)) {
+  for (let i = 0; i < errors.length; i += batchSize) {
+    const chunk = errors.slice(i, i + batchSize);
+    const part = Math.floor(i / batchSize) + 1;
+
+    messages.push({
+      json: {
+        content: `🚨Domain Error: ${domain} (Part #${part})\n${chunk.join('\n')}`
+      }
+    });
+  }
+}
+
+return messages;
 ```
 
 #### Node 3: Discord - Thông báo lỗi
@@ -542,7 +637,7 @@ Thứ tự Workflow
 
 <div align="center">
 
-![Screenshot from 2025-06-19 16-45-53](https://github.com/user-attachments/assets/d4209e61-6444-472b-b0d6-0aaf519ed469)
+![image](https://github.com/user-attachments/assets/5e74b112-95bc-47c6-8df2-ef004085c495)
 
 </div>
 
@@ -553,133 +648,6 @@ Cách thông báo lỗi hiển thị
 ![image](https://github.com/user-attachments/assets/4f23b47f-7df0-4748-83cb-03adf863fc66)
 
 </div>
-
-# Tích hợp quét IFrames 
-
-## Workflow điều hướng
-
-Bên cạnh các hình ảnh, đường link IFrames cũng nên được kiểm tra 1 cách kĩ càng để tránh những lỗi sai sót ảnh hưởng tới người dùng
-
-Tích hợp quét IFrames sẽ khiến cho lượng dữ liệu đầu vào khá lớn trong quá trình truyền tại Workflow nên sẽ cần phải chia nhỏ Batch số lượng Domain mỗi lần quét tại Workflow điều hướng từ 1000 thành 500. Từ đó, sẽ có được mô hình tổng quan của Workflow điều hướng như sau
-
-![image](https://github.com/user-attachments/assets/0416c6f9-b97c-44eb-b5ad-66d4811d9a17)
-
-## Workflow thực thi 
-
-Thực hiện chia ra 8 Workflow với mỗi Workflow thực hiện 500 Batches dữ liệu (Phân loại qua node IF) để giảm thiểu tối đa lỗi node.
-
-Đối với các Workflow thực thi, giữ nguyên nhánh quét Image và thêm 1 nhánh quét Image với các node như hình dưới. TẤT CẢ CÁC WORKFLOW THỰC THI ĐỀU GIỐNG NHAU
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/2dd45db0-5e41-4d3b-b766-5ee414922cf3)
-
-</div>
-
-Lưu ý,
-
-Chỉnh sửa "Node Extract": Thêm trường IFrame để tách các IFrame từ trang web
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/9f3560f5-26b4-409d-8fd0-c90a2976c353)
-
-</div>
-
-Thêm 1 Node IF: Để kiểm tra mảng Iframe rỗng
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/f0133fd6-6e0e-4860-aa70-a730c9a06f4f)
-
-</div>
-
-Thêm 1 Node Split: Tách giá trị IFrame ra khỏi mảng 
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/f6b08b82-6006-4225-922f-15ca9580cb68)
-
-</div>
-
-Thêm 1 node Code: Lọc các giá trị Null, không xác định. Thực hiện code JavaScript sau 
-
-```
-return items.filter(item => {
-  const iframe = item.json.iframe;
-
-  if (typeof iframe !== 'string') return false;
-  if (iframe.trim() === '') return false;
-
-  return true;
-});
-```
-
-Thêm 1 node Remove Duplicates: Loại bỏ các giá trị IFrame trùng
-
-Giá trị cấu hình giống node Remove Duplicates của Images
-
-Thêm 1 node HTTP Request: Để kiểm tra IFrames
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/8d8ad357-ebd3-4fa9-837c-40b8c7b0d6b1)
-
-</div>
-
-Thêm 1 node Merge: Để gộp lỗi Images, IFrames của 1 trang web. 
-
-<div align="center">
-
-![image](https://github.com/user-attachments/assets/4891825e-fc93-45b6-87ea-22de4628211f)
-
-</div>
-
-Chỉnh sửa node Code: Gộp tất cả lỗi Images IFrames trong 1 Batch để thực hiện thông báo. Thực hiện code JS sau
-
-```
-const domain = $('Loop Over Items').item?.json?.domain || 'Unknown';
-const seen = new Set();
-const results = [];
-
-for (const item of items) {
-  const error = item.json?.error;
-  const statusCode = item.json?.error?.code || 'Unknown';
-
-  const images = item.json?.image || [];
-  const iframes = item.json?.iframe || [];
-
-  const imageList = Array.isArray(images) ? images : [images];
-  const iframeList = Array.isArray(iframes) ? iframes : [iframes];
-
-  for (const url of imageList) {
-    if (url && error && !seen.has(`image:${url}`)) {
-      seen.add(`image:${url}`);
-      results.push(`🖼️ Image: ${url} (Error: ${statusCode})`);
-    }
-  }
-
-  for (const url of iframeList) {
-    if (url && error && !seen.has(`iframe:${url}`)) {
-      seen.add(`iframe:${url}`);
-      results.push(`🧩 Iframe: ${url} (Error: ${statusCode})`);
-    }
-  }
-}
-
-const limited = results.slice(0, 50);
-
-return [{
-  json: {
-    content: limited.length
-      ? `🚨Domain Error: ${domain}\n${limited.join('\n')}`
-      : '',
-  },
-}];
-```
-## Thử nghiệm 
-
-Sau khi chạy Workflow, nếu có lỗi sẽ hiển thị thông báo như sau
 
 <div akign="center">
   
