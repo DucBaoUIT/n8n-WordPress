@@ -24,7 +24,7 @@
     },
     {
       "parameters": {
-        "jsCode": "return items.map(item => ({\n  json: {\n    domain: item.json['Domain '],\n  }\n}));\n"
+        "jsCode": "return items.map(item => ({\n  json: {\n    domain: item.json['Domain'],\n  }\n}));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -186,9 +186,9 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "hcJQMqGvYvnoI9DD",
+          "value": "A9R9OpxPB6TXyog1",
           "mode": "list",
-          "cachedResultName": "Scan From 0"
+          "cachedResultName": "Scan 0-800"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -233,9 +233,9 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "PINLwX6Bv4Uz5Zut",
+          "value": "vg8MOjQmJrQb1ilo",
           "mode": "list",
-          "cachedResultName": "Scan from 500"
+          "cachedResultName": "Scan 800-1600"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -260,9 +260,9 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "STkC6CK7ecSuCBg3",
+          "value": "HRoXbFCOAm6VyU0Y",
           "mode": "list",
-          "cachedResultName": "Scan From 1000"
+          "cachedResultName": "Scan 1600-2400"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -287,9 +287,9 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "Cp8f1sD0jCq0eCUH",
+          "value": "0v1U1uGU7feUYuO1",
           "mode": "list",
-          "cachedResultName": "Scan from 1500"
+          "cachedResultName": "Scan 2400-3200"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -313,7 +313,7 @@
     {
       "parameters": {
         "authentication": "webhook",
-        "content": "=Domain: {{ $('Extract Main Domains').item.json.domain }}/sitemap.xml\nError Code: {{ $json.error.code }}\nError Status: {{ $json.error.status }}\n!!! Please check sitemap of your domain\n/////////////////////////////////////",
+        "content": "=Domain: {{ $('Extract Main Domains').item.json.domain }}sitemap.xml\nError Code: {{ $json.error.code }}\nError Status: {{ $json.error.status }}\n!!! Please check sitemap of your domain\n/////////////////////////////////////",
         "options": {}
       },
       "type": "n8n-nodes-base.discord",
@@ -345,7 +345,7 @@
             {
               "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 1500,
+              "rightValue": 2400,
               "operator": {
                 "type": "number",
                 "operation": "gte"
@@ -354,7 +354,7 @@
             {
               "id": "b63c624e-0707-4560-8306-6aca99235636",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 1999,
+              "rightValue": 3199,
               "operator": {
                 "type": "number",
                 "operation": "lte"
@@ -387,7 +387,7 @@
             {
               "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 1000,
+              "rightValue": 1600,
               "operator": {
                 "type": "number",
                 "operation": "gte"
@@ -396,7 +396,7 @@
             {
               "id": "bbd5729a-3cad-4338-bef0-8991f1c2fb73",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 1499,
+              "rightValue": 2399,
               "operator": {
                 "type": "number",
                 "operation": "lte"
@@ -429,7 +429,7 @@
             {
               "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 500,
+              "rightValue": 800,
               "operator": {
                 "type": "number",
                 "operation": "gte"
@@ -438,7 +438,7 @@
             {
               "id": "6dd6e433-7f83-49b9-b6e3-167d39bb9102",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 999,
+              "rightValue": 1599,
               "operator": {
                 "type": "number",
                 "operation": "lte"
@@ -471,7 +471,7 @@
             {
               "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 499,
+              "rightValue": 799,
               "operator": {
                 "type": "number",
                 "operation": "lte"
@@ -493,13 +493,13 @@
     },
     {
       "parameters": {
-        "batchSize": 500,
+        "batchSize": 200,
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -640,
+        -580,
         500
       ],
       "id": "3e2ccfb6-2b17-4699-a640-62cd01b9aa7a",
@@ -511,8 +511,8 @@
       "name": "Replace Me",
       "typeVersion": 1,
       "position": [
-        380,
-        500
+        280,
+        940
       ],
       "id": "cb5d76c8-a2f4-4abb-b9c2-5b23ab2e302a"
     },
@@ -583,7 +583,7 @@
       "parameters": {
         "content": "# 5. Remove Duplicates and Mark index \n\n## - Remove duplicates domain\n\n## - Set index for each item to split into workflow",
         "height": 440,
-        "width": 420,
+        "width": 380,
         "color": 7
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -615,9 +615,9 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "i2mexL3LzZuuqXZ9",
+          "value": "mvso3Ujun2xmxNwt",
           "mode": "list",
-          "cachedResultName": "Scan from 2000"
+          "cachedResultName": "Scan 3200-4000"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -642,9 +642,9 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "wlYTArm4XYLxfZ4G",
+          "value": "Dq0z4EEoroaQ1I8j",
           "mode": "list",
-          "cachedResultName": "Scan from 2500"
+          "cachedResultName": "Scan 4000-4800"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -669,9 +669,9 @@
       "parameters": {
         "workflowId": {
           "__rl": true,
-          "value": "A9R9OpxPB6TXyog1",
+          "value": "WYr7ef4gbJf4cpHf",
           "mode": "list",
-          "cachedResultName": "Scan from 3000"
+          "cachedResultName": "Scan Others"
         },
         "workflowInputs": {
           "mappingMode": "defineBelow",
@@ -694,33 +694,6 @@
     },
     {
       "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "PGb6gM17F0BsKags",
-          "mode": "list",
-          "cachedResultName": "Scan from 3500"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        -80,
-        1120
-      ],
-      "id": "b71e4b97-dc3e-4d68-987c-315d81a08e11",
-      "name": "Execute Workflow7"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -732,52 +705,10 @@
             {
               "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 3500,
+              "rightValue": 4800,
               "operator": {
                 "type": "number",
                 "operation": "gte"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -320,
-        1140
-      ],
-      "id": "45569588-e7d2-498e-be25-80a14caf43e8",
-      "name": "If4"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
-              "leftValue": "={{ $json._index }}",
-              "rightValue": 3000,
-              "operator": {
-                "type": "number",
-                "operation": "gte"
-              }
-            },
-            {
-              "id": "bbd5729a-3cad-4338-bef0-8991f1c2fb73",
-              "leftValue": "={{ $json._index }}",
-              "rightValue": 3499,
-              "operator": {
-                "type": "number",
-                "operation": "lte"
               }
             }
           ],
@@ -807,7 +738,7 @@
             {
               "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 2500,
+              "rightValue": 4000,
               "operator": {
                 "type": "number",
                 "operation": "gte"
@@ -816,7 +747,7 @@
             {
               "id": "6dd6e433-7f83-49b9-b6e3-167d39bb9102",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 2999,
+              "rightValue": 4799,
               "operator": {
                 "type": "number",
                 "operation": "lte"
@@ -849,7 +780,7 @@
             {
               "id": "f4f300dc-001b-46ed-95fc-6ba4280020f3",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 2000,
+              "rightValue": 3200,
               "operator": {
                 "type": "number",
                 "operation": "gte"
@@ -858,7 +789,7 @@
             {
               "id": "8271a7a8-4bbd-42a7-a798-1cb122af692e",
               "leftValue": "={{ $json._index }}",
-              "rightValue": 2499,
+              "rightValue": 3999,
               "operator": {
                 "type": "number",
                 "operation": "lte"
@@ -1087,11 +1018,6 @@
             "node": "If5",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "If4",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -1145,17 +1071,6 @@
         [
           {
             "node": "Replace Me",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If4": {
-      "main": [
-        [
-          {
-            "node": "Execute Workflow7",
             "type": "main",
             "index": 0
           }
@@ -1227,24 +1142,13 @@
           }
         ]
       ]
-    },
-    "Execute Workflow7": {
-      "main": [
-        [
-          {
-            "node": "Replace Me",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "703047ae-60e0-44c5-83dd-65f601d3eb6c",
+  "versionId": "0b3bf69f-aa34-4bc7-b1d7-a7342147947a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "da33118653b457a38767846f003a1ddd3b6e88f9568f32164fe696d219064bab"

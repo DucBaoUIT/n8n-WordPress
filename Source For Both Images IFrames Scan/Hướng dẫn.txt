@@ -1,4 +1,4 @@
 Bạn chỉ cần tải 2 file workflow về
 
 + File Orchestrator (Điều hướng)
-+ File Scan_From_0 (những Workflow còn lại bạn có thể Duplicate từ Workflow này vì nó hoàn toàn giống nhau)
++ File Scan_Others (những Workflow còn lại bạn có thể Duplicate từ Workflow này vì nó hoàn toàn giống nhau)
